@@ -1,0 +1,14 @@
+{
+  "problemId": "fib",
+  "elapsedTime": 435.212,
+  "sourceCode": "dummy source code",
+  "statusCode": "ACCEPTED",
+  "userId": "0-0",
+  "language": "kotlin",
+  "id": "2-4",
+  "submissionId": "2",
+  "submissionTime": "",
+  "consumedMemory": 10,
+  "passedTestCases": 1,
+  "failedTestCases": 0
+}
