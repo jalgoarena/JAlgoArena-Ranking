@@ -38,7 +38,7 @@ class RankingController(
 
     private fun calculateSubmissionsSolvedRatioAndReturnIt(submissions: List<Submission>) =
             submissions
-                    .distinctBy { it.userId }
+                    .distinctBy { Pair(it.userId, it.problemId) }
                     .groupBy { it.problemId }
                     .map {
                         SolvedRatioEntry(it.key, it.value.count())

@@ -10,26 +10,6 @@ class BasicRankingCalculator(
         ScoreCalculator by scoreCalculator,
         SubmissionsRepository by submissionsRepository {
 
-    override fun userRankingDetails(
-            user: User,
-            problems: List<Problem>,
-            users: List<User>
-    ) = findByUserId(user.id).map { userSubmission ->
-
-        val problem = problems.first { it.id == userSubmission.problemId }
-        val score = calculate(userSubmission, problem)
-        val (problemRankPlace) = problemRanking(problem.id, users, problems)
-                .mapIndexed { i, problemRankEntry -> Pair(i, problemRankEntry) }
-                .first { it.second.hacker == user.username }
-
-        SubmissionWithRankingDetails.from(
-                userSubmission,
-                problem.level,
-                score,
-                problemRankPlace + 1
-        )
-    }
-
     override fun ranking(users: List<User>, submissions: List<Submission>, problems: List<Problem>): List<RankEntry> {
 
         return users.map { user ->
