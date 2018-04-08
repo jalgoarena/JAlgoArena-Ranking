@@ -14,7 +14,7 @@ Demo: https://jalgoarena-ui.herokuapp.com/
 
 ## Introduction
 
-- JAlgoArena Ranking ir responsible for calculating ranking and exposing it via REST API
+- JAlgoArena Ranking is responsible for calculating ranking and exposing it via REST API
 
 ![Component Diagram](https://github.com/spolnik/JAlgoArena-Ranking/raw/master/design/component_diagram.png)
 
@@ -47,7 +47,7 @@ Demo: https://jalgoarena-ui.herokuapp.com/
 - Heroku (PaaS)
 - Xodus (embedded highly scalable database) - http://jetbrains.github.io/xodus/
 - Spring Boot, Spring Cloud (Eureka Client)
-- TravisCI - https://travis-ci.org/spolnik/JAlgoArena-Submissions
+- TravisCI - https://travis-ci.org/spolnik/JAlgoArena-Ranking
 - Apache Kafka
 
 ## Running locally
