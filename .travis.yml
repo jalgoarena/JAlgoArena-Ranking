@@ -18,8 +18,8 @@ deploy:
   api_key:
     secure: 0vBWrSp0tX7A8rgMjfNgMlosHrQDSh/vVtXv62dRK2Sx6ERVvz7VTW03roBWqaVe1niEjUtvP9Yfe9m93J4sF3J9T85j5wv55Nvibmwbi84v4MFYxUCIiiH+J4ocaZ/xEl9S+cI50++RgCTPJzfBd1dG4x59ArLXWXVE9nIBclnAGNTuC6vHce+wiOQtElWSGM1KIa2m6c67VKPSSrnxfjacWCaIEn9tlAOKBCmcyuXnoyNb8L+GKJ5jYr5PDY0tiQdE7uhG09h5YWKIo8DDk6fQIhWQhokWs1NdXOoF8LT+ihdnE0UfboUketXi1bKjBqdtQs3q2jU7zoH40Py4B77G0LT0WKR/kFXGHdhHmJjWSR+PfnaKe1AZ8E1ISHR8WVKGzt+PWsmvWqd17HSBliOI/gJf9CdVft51AsCCvkXOqJWcujyzQ7EU1h4SYznNWF+NtZeVCVtJoPV21kxnhtdC7mACsVFffpByFUImxEx8OTnk0csyB7l9bFlcxwJqoMXLlYlW9HDrDlWLHupNIs/Qps2ZQ5NEBivu+yZK7d+djYlEYtvD3tQoZ19puGqBonhePK7oi914+3WsZpq6ELSCCUwPBS8Bzy7Tr+U3vrhEvWit+z7FQK5mpE5+sKiGWDCuCQJHrbUnJb/HWAGazxvSqsVVpjETJyEH5sH7I4A=
   file_glob: true
-    file: "./build/libs/JAlgoArena-Ranking-*.zip"
-    skip_cleanup: true
-    on:
-      repo: spolnik/JAlgoArena-Ranking
-      tags: true
+  file: "./build/libs/JAlgoArena-Ranking-*.zip"
+  skip_cleanup: true
+  on:
+    repo: spolnik/JAlgoArena-Ranking
+    tags: true
