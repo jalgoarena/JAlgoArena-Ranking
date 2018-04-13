@@ -15,10 +15,6 @@ import org.springframework.web.client.RestOperations
 
 class HttpUsersClientSpec {
 
-    private val DUMMY_TOKEN = "Bearer sdaw9awdw"
-    private val USER_ROLE = "USER"
-    private val USERS_SERVICE_DUMMY_URL = "http://localhost:9999"
-
     private val discoveryClient = mock(EurekaClient::class.java)
     private val restTemplate = mock(RestOperations::class.java)
     private val usersClient = HttpUsersClient(discoveryClient, restTemplate)
@@ -70,5 +66,12 @@ class HttpUsersClientSpec {
         given(discoveryClient.getNextServerFromEureka("jalgoarena-auth", false)).willReturn(instanceInfo)
     }
 
-    private val USER = User("mikolaj", "Kraków", "Tyniec Team", USER_ROLE, "0-0")
+    companion object {
+        private const val DUMMY_TOKEN = "Bearer sdaw9awdw"
+        private const val USER_ROLE = "USER"
+        private const val USERS_SERVICE_DUMMY_URL = "http://localhost:9999"
+        private val USER = User(
+                "mikolaj", "Kraków", "Tyniec Team", USER_ROLE, "0-0"
+        )
+    }
 }
