@@ -90,7 +90,7 @@ class RankingControllerSpec {
                 ProblemRankEntry("mikołaj", 10.0, 0.01, "java")
         ))
 
-        mockMvc.perform(get("/ranking/fib")
+        mockMvc.perform(get("/ranking/problem/fib")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$", hasSize<ArrayNode>(3)))
