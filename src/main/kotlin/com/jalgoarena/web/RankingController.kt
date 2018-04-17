@@ -25,11 +25,18 @@ class RankingController(
             problems = problemsRepository.findAll()
     )
 
-    @GetMapping("/ranking/{problemId}", produces = ["application/json"])
+    @GetMapping("/ranking/problem/{problemId}", produces = ["application/json"])
     fun problemRanking(@PathVariable problemId: String) =
             rankingCalculator.problemRanking(
                     problemId = problemId,
                     users = usersClient.findAllUsers(),
+                    problems = problemsRepository.findAll())
+
+    @GetMapping("/ranking/language/{lang}", produces = ["application/json"])
+    fun languageRanking(@PathVariable lang: String) =
+            rankingCalculator.ranking(
+                    users = usersClient.findAllUsers().filter { it.username != "admin" },
+                    submissions = submissionsRepository.findAllAcceptedFor(lang),
                     problems = problemsRepository.findAll())
 
     @GetMapping("/solved-ratio", produces = ["application/json"])

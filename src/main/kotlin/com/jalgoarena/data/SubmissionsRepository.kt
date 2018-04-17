@@ -12,5 +12,6 @@ interface SubmissionsRepository {
     fun destroy()
     fun findBySubmissionId(submissionId: String): Submission
     fun findAllAccepted(): List<Submission>
+    fun findAllAcceptedFor(lang: String): List<Submission>
 }
 

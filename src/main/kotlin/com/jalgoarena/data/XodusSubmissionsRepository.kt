@@ -31,6 +31,18 @@ open class XodusSubmissionsRepository(db: Db) : SubmissionsRepository {
         }
     }
 
+    override fun findAllAcceptedFor(lang: String): List<Submission> {
+        return readonly {
+            it.find(
+                    Constants.SUBMISSION_ENTITY_TYPE,
+                    Constants.statusCode,
+                    Constants.ACCEPTED
+            ).intersect(
+                    it.find(Constants.SUBMISSION_ENTITY_TYPE, Constants.language, lang)
+            ).map { Submission.from(it) }
+        }
+    }
+
     override fun findByUserId(userId: String): List<Submission> {
         return readonly {
             it.find(
@@ -84,6 +96,7 @@ open class XodusSubmissionsRepository(db: Db) : SubmissionsRepository {
             val existingEntity = it
                     .find(Constants.SUBMISSION_ENTITY_TYPE, Constants.userId, submission.userId)
                     .intersect(it.find(Constants.SUBMISSION_ENTITY_TYPE, Constants.problemId, submission.problemId))
+                    .intersect(it.find(Constants.SUBMISSION_ENTITY_TYPE, Constants.language, submission.language))
                     .firstOrNull()
 
             if (existingEntity != null) {
