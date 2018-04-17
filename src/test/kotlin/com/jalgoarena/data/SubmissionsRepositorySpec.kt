@@ -111,14 +111,16 @@ class SubmissionsRepositorySpec {
         try {
             val fibSubmissions = REPOSITORY.findAll()
             assertThat(fibSubmissions).isEqualTo(listOf(
-                    submission4,
+                    submission1,
                     submission2,
-                    submission3
+                    submission3,
+                    submission4
             ))
         } finally {
             REPOSITORY.delete(submission1.id!!)
             REPOSITORY.delete(submission2.id!!)
             REPOSITORY.delete(submission3.id!!)
+            REPOSITORY.delete(submission4.id!!)
         }
     }
 
