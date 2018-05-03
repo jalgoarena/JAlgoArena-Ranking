@@ -31,13 +31,17 @@ class SubmissionResultsConsumer(
         logger.info("Received {} [submissionId={}]", "Submission result", submission.submissionId)
 
         if (submission.statusCode != "ACCEPTED") {
-            logger.info("Ignoring [statusCode={}]", submission.statusCode)
+            logger.info("Ignoring [submissionId={}][status={}]",
+                    submission.submissionId,
+                    submission.statusCode)
             return
         }
 
         if (isValidUser(submission)) {
             submissionsRepository.addOrUpdate(submission)
-            logger.info("Submission result is saved [submissionId={}]", submission.submissionId)
+            logger.info("Submission result is saved [submissionId={}][status={}]",
+                    submission.submissionId,
+                    submission.statusCode)
 
             val future = template.send("events", RankingEvent(problemId = submission.problemId))
             future.addCallback(PublishHandler(submission.submissionId))
