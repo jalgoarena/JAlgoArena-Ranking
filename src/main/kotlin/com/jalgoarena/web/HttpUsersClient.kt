@@ -16,8 +16,6 @@ class HttpUsersClient(
         @Inject private val restTemplate : RestOperations
 ) : UsersClient {
 
-    private val LOG = LoggerFactory.getLogger(this.javaClass)
-
     private fun authServiceUrl() =
             discoveryClient.getNextServerFromEureka("jalgoarena-auth", false).homePageUrl
 
@@ -44,5 +42,9 @@ class HttpUsersClient(
     } catch(e: Exception) {
         LOG.error("Error in querying jalgoarena auth service", e)
         returnOnException
+    }
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(HttpUsersClient::class.java)
     }
 }
