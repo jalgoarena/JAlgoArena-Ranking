@@ -32,7 +32,7 @@ class BasicScoreCalculatorSpec {
                 elapsedTime = elapsedTime
         )
 
-        val result = calculator.calculate(submission, Problem("fib", 1, 1))
+        val result = calculator.calculate(submission, Problem("fib", 1, 1), 1)
         assertThat(result).isEqualTo(expectedScore)
     }
 
@@ -47,7 +47,7 @@ class BasicScoreCalculatorSpec {
                 elapsedTime = 0.1
         )
 
-        val result = calculator.calculate(submission, Problem("fib", level, 1))
+        val result = calculator.calculate(submission, Problem("fib", level, 1), 1)
         assertThat(result).isEqualTo(expectedScore)
     }
 

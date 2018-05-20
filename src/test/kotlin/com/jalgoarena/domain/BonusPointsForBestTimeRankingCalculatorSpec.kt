@@ -6,10 +6,12 @@ import com.jalgoarena.ranking.BasicRankingCalculator
 import com.jalgoarena.ranking.BasicScoreCalculator
 import com.jalgoarena.ranking.BonusPointsForBestTimeRankingCalculator
 import com.jalgoarena.ranking.RankingCalculator
+import com.jalgoarena.web.SubmissionsClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 
@@ -18,12 +20,25 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
     private lateinit var submissionsRepository: SubmissionsRepository
     private lateinit var problemsRepository: ProblemsRepository
     private lateinit var rankingCalculator: RankingCalculator
+    private lateinit var submissionsClient: SubmissionsClient
+    private lateinit var submissionStats: SubmissionStats
 
     @Before
     fun setUp() {
         submissionsRepository = mock(SubmissionsRepository::class.java)
         rankingCalculator = mock(RankingCalculator::class.java)
         problemsRepository = mock(ProblemsRepository::class.java)
+        submissionsClient = mock(SubmissionsClient::class.java)
+
+        val count = mutableMapOf<String, Map<String, Map<String, Int>>>()
+
+        count[USER_MIKOLAJ.id] = mutableMapOf()
+        count[USER_JOE.id] = mutableMapOf()
+        count[USER_JULIA.id] = mutableMapOf()
+        count[USER_TOM.id] = mutableMapOf()
+
+        submissionStats = SubmissionStats(count)
+        Mockito.`when`(submissionsClient.stats()).thenReturn(submissionStats)
     }
 
     @Test
@@ -46,10 +61,10 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
         val rankingCalculator = bonusPointsForBestTimeRankingCalculator(submissionsRepository)
 
         assertThat(rankingCalculator.ranking(USERS, submissionsRepository.findAll(), problemsRepository.findAll())).isEqualTo(listOf(
-                RankEntry("mikołaj", 62.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team", listOf(Pair("java", 2))),
-                RankEntry("julia", 60.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team", listOf(Pair("java", 2))),
-                RankEntry("joe", 31.0, listOf("2-sum"), "London", "London Team", listOf(Pair("java", 1))),
-                RankEntry("tom", 30.0, listOf("2-sum"), "London", "London Team", listOf(Pair("java", 1)))
+                RankEntry("mikołaj", 62.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team"),
+                RankEntry("julia", 60.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team"),
+                RankEntry("joe", 31.0, listOf("2-sum"), "London", "London Team"),
+                RankEntry("tom", 30.0, listOf("2-sum"), "London", "London Team")
         ))
     }
 
@@ -67,10 +82,10 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
         val rankingCalculator = bonusPointsForBestTimeRankingCalculator(submissionsRepository)
 
         assertThat(rankingCalculator.ranking(USERS, submissionsRepository.findAll(), problemsRepository.findAll())).isEqualTo(listOf(
-                RankEntry("joe", 11.0, listOf("fib"), "London", "London Team", listOf(Pair("java", 1))),
-                RankEntry("julia", 10.0, listOf("fib"), "Kraków", "Tyniec Team", listOf(Pair("java", 1))),
-                RankEntry("mikołaj", 0.0, emptyList(), "Kraków", "Tyniec Team", emptyList()),
-                RankEntry("tom", 0.0, emptyList(), "London", "London Team", emptyList())
+                RankEntry("joe", 11.0, listOf("fib"), "London", "London Team"),
+                RankEntry("julia", 10.0, listOf("fib"), "Kraków", "Tyniec Team"),
+                RankEntry("mikołaj", 0.0, emptyList(), "Kraków", "Tyniec Team"),
+                RankEntry("tom", 0.0, emptyList(), "London", "London Team")
         ))
     }
 
@@ -110,7 +125,7 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
     private fun bonusPointsForBestTimeRankingCalculator(repository: SubmissionsRepository) =
             BonusPointsForBestTimeRankingCalculator(
                     repository,
-                    BasicRankingCalculator(repository, BasicScoreCalculator())
+                    BasicRankingCalculator(submissionsClient, repository, BasicScoreCalculator())
             )
 
     private fun submission(problemId: String, elapsedTime: Double, userId: String) =

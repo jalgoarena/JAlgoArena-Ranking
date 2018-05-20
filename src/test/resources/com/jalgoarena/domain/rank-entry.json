@@ -3,9 +3,5 @@
   "score":  14.5,
   "region":  "Kraków",
   "team":  "Tyniec Team",
-  "solvedProblems":  ["fib", "2-sum"],
-  "numberOfSolutionsPerLanguage":  [
-    {"first": "java", "second": 2},
-    {"first": "kotlin", "second": 4}
-  ]
+  "solvedProblems":  ["fib", "2-sum"]
 }

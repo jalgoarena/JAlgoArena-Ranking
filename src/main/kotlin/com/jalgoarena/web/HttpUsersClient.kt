@@ -13,7 +13,7 @@ import javax.inject.Inject
 @Service
 class HttpUsersClient(
         @Inject private val discoveryClient: EurekaClient,
-        @Inject private val restTemplate : RestOperations
+        @Inject private val restTemplate: RestOperations
 ) : UsersClient {
 
     private fun authServiceUrl() =

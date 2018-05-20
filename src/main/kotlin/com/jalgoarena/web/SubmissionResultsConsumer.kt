@@ -34,6 +34,10 @@ class SubmissionResultsConsumer(
             logger.info("Ignoring [submissionId={}][status={}]",
                     submission.submissionId,
                     submission.statusCode)
+
+            val future = template.send("events", RankingEvent(problemId = submission.problemId))
+            future.addCallback(PublishHandler(submission.submissionId))
+
             return
         }
 

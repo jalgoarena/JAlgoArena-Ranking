@@ -5,6 +5,5 @@ data class RankEntry(
         val score: Double,
         val solvedProblems: List<String>,
         val region: String,
-        val team: String,
-        val numberOfSolutionsPerLanguage: List<Pair<String, Int>>
+        val team: String
 )

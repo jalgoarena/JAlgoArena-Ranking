@@ -20,8 +20,7 @@ class BonusPointsForBestTimeRankingCalculator(
                     rankEntry.score + bonusPoints[id] as Double,
                     rankEntry.solvedProblems,
                     rankEntry.region,
-                    rankEntry.team,
-                    rankEntry.numberOfSolutionsPerLanguage
+                    rankEntry.team
             )
         }.sortedByDescending { it.score }
     }
