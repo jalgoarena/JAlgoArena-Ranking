@@ -1,7 +1,5 @@
 package com.jalgoarena
 
-import com.jalgoarena.data.SubmissionsRepository
-import com.netflix.discovery.EurekaClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Test
@@ -9,11 +7,10 @@ import org.junit.runner.RunWith
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.test.context.junit4.SpringRunner
-import javax.inject.Inject
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.kafka.test.rule.KafkaEmbedded
+import org.springframework.test.context.junit4.SpringRunner
+import javax.inject.Inject
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -21,12 +18,6 @@ import org.springframework.kafka.test.rule.KafkaEmbedded
 class JAlgoArenaSubmissionsAppIntegrationTest {
     @Inject
     private lateinit var restTemplate: TestRestTemplate
-
-    @MockBean
-    private lateinit var submissionsRepository: SubmissionsRepository
-
-    @MockBean
-    private lateinit var eurekaClient: EurekaClient
 
     @Inject
     private lateinit var embeddedKafka: KafkaEmbedded

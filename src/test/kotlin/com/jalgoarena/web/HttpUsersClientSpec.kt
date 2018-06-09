@@ -1,8 +1,6 @@
 package com.jalgoarena.web
 
 import com.jalgoarena.domain.User
-import com.netflix.appinfo.InstanceInfo
-import com.netflix.discovery.EurekaClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -15,23 +13,19 @@ import org.springframework.web.client.RestOperations
 
 class HttpUsersClientSpec {
 
-    private val discoveryClient = mock(EurekaClient::class.java)
     private val restTemplate = mock(RestOperations::class.java)
-    private val usersClient = HttpUsersClient(discoveryClient, restTemplate)
+    private val usersClient = HttpUsersClient(restTemplate)
 
     @Test
     fun delegates_get_user_request_to_auth_service_endpoint() {
-        givenDiscoveryService()
-
         val headers = HttpHeaders().apply {
             set("X-Authorization", DUMMY_TOKEN)
         }
 
         val entity = HttpEntity<HttpHeaders>(headers)
 
-
         given(restTemplate.exchange(
-                "$USERS_SERVICE_DUMMY_URL/api/user", HttpMethod.GET, entity, User::class.java
+                "http://jalgoarena-auth/api/user", HttpMethod.GET, entity, User::class.java
         )).willReturn(ResponseEntity.ok(USER))
 
         val user = usersClient.findUser(DUMMY_TOKEN)
@@ -41,17 +35,13 @@ class HttpUsersClientSpec {
 
     @Test
     fun returns_null_if_there_is_any_issue_with_response() {
-        givenDiscoveryService()
-
         val user = usersClient.findUser(DUMMY_TOKEN)
         assertThat(user).isNull()
     }
 
     @Test
     fun returns_all_users() {
-        givenDiscoveryService()
-
-        given(restTemplate.getForObject("$USERS_SERVICE_DUMMY_URL/users", Array<User>::class.java))
+        given(restTemplate.getForObject("http://jalgoarena-auth/users", Array<User>::class.java))
                 .willReturn(arrayOf(USER))
 
         val users = usersClient.findAllUsers()
@@ -59,17 +49,9 @@ class HttpUsersClientSpec {
         assertThat(users).hasSize(1)
     }
 
-    private fun givenDiscoveryService() {
-        val instanceInfo = mock(InstanceInfo::class.java)
-
-        given(instanceInfo.homePageUrl).willReturn(USERS_SERVICE_DUMMY_URL)
-        given(discoveryClient.getNextServerFromEureka("jalgoarena-auth", false)).willReturn(instanceInfo)
-    }
-
     companion object {
         private const val DUMMY_TOKEN = "Bearer sdaw9awdw"
         private const val USER_ROLE = "USER"
-        private const val USERS_SERVICE_DUMMY_URL = "http://localhost:9999"
         private val USER = User(
                 "mikolaj", "Kraków", "Tyniec Team", USER_ROLE, "0-0"
         )
