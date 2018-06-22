@@ -1,13 +1,8 @@
 logging:
   path: ./logs
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_URL:http://localhost:5000/eureka/}
-
 server:
-  port: ${PORT:0}
+  port: ${PORT:5006}
 
 spring:
   kafka:
