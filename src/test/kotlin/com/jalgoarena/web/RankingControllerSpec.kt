@@ -1,34 +1,28 @@
 package com.jalgoarena.web
 
-import com.fasterxml.jackson.databind.node.ArrayNode
 import com.jalgoarena.data.ProblemsRepository
 import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.domain.ProblemRankEntry
 import com.jalgoarena.domain.RankEntry
 import com.jalgoarena.domain.Submission
 import com.jalgoarena.ranking.RankingCalculator
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.hasSize
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 @RunWith(SpringRunner::class)
-@WebMvcTest(RankingController::class)
+@WebFluxTest(RankingController::class)
 class RankingControllerSpec {
 
     @Inject
-    private lateinit var mockMvc: MockMvc
+    private lateinit var webTestClient: WebTestClient
 
     @MockBean
     private lateinit var usersClient: UsersClient
@@ -52,12 +46,15 @@ class RankingControllerSpec {
                 submissionForProblem("2-sum", "user2")
         ))
 
-        mockMvc.perform(get("/solved-ratio")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$", hasSize<ArrayNode>(2)))
-                .andExpect(jsonPath("$[0].problemId", Matchers.`is`("fib")))
-                .andExpect(jsonPath("$[0].solutionsCount", Matchers.`is`(3)))
+        webTestClient.get()
+                .uri("/solved-ratio")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$").isArray
+                .jsonPath("$[0].problemId").isEqualTo("fib")
+                .jsonPath("$[0].solutionsCount").isEqualTo(3)
     }
 
     @Test
@@ -73,10 +70,13 @@ class RankingControllerSpec {
                 RankEntry("tom", 20.0, listOf("2-sum"), "London", "London Team")
         ))
 
-        mockMvc.perform(get("/ranking")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$", hasSize<ArrayNode>(4)))
+        webTestClient.get()
+                .uri("/ranking")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.length()").isEqualTo(4)
     }
 
     @Test
@@ -90,10 +90,13 @@ class RankingControllerSpec {
                 ProblemRankEntry("mikołaj", 10.0, 0.01, "java")
         ))
 
-        mockMvc.perform(get("/ranking/problem/fib")
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk)
-                .andExpect(jsonPath("$", hasSize<ArrayNode>(3)))
+        webTestClient.get()
+                .uri("/ranking/problem/fib")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.length()").isEqualTo(3)
     }
 
     private fun submissionForProblem(problemId: String, userId: String, id: String? = null) =
