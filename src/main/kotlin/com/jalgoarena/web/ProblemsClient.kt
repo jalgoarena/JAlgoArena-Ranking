@@ -15,5 +15,5 @@ open class ProblemsClient(
     @Cacheable("problems")
     override fun findAll(): List<Problem> = restTemplate.getForObject(
             "http://jalgoarena-judge/problems", Array<Problem>::class.java
-    ).asList()
+    )!!.asList()
 }

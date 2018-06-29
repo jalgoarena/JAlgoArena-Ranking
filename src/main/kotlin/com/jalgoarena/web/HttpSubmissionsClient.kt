@@ -12,5 +12,5 @@ open class HttpSubmissionsClient(
 
     override fun stats(): SubmissionStats = restTemplate.getForObject(
             "http://jalgoarena-submissions/submissions/stats", SubmissionStats::class.java
-    )
+    )!!
 }
