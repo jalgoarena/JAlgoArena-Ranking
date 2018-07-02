@@ -29,7 +29,7 @@ class SubmissionsRepositorySpec {
 
     @Test
     fun adds_new_submission() {
-        val submission = REPOSITORY.addOrUpdate(user1SubmissionForFibInKotlin)
+        val submission = REPOSITORY.addOrUpdate(user1SubmissionForFib)
 
         try {
             assertThat(submission.id).isNotNull()
@@ -40,7 +40,7 @@ class SubmissionsRepositorySpec {
 
     @Test
     fun deletes_already_added_submission() {
-        val submission = REPOSITORY.addOrUpdate(user2SubmissionForFibInKotlin)
+        val submission = REPOSITORY.addOrUpdate(user2SubmissionForFib)
 
         REPOSITORY.delete(submission.id!!)
         val deletedSubmission = REPOSITORY.findById(submission.id!!)
@@ -50,8 +50,8 @@ class SubmissionsRepositorySpec {
 
     @Test
     fun returns_all_added_submissions() {
-        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFibInKotlin)
-        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFibInKotlin)
+        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFib)
+        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFib)
 
         try {
             val allSubmissions = REPOSITORY.findAll()
@@ -68,8 +68,8 @@ class SubmissionsRepositorySpec {
 
     @Test
     fun returns_only_user_owned_submissions() {
-        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFibInKotlin)
-        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFibInKotlin)
+        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFib)
+        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFib)
         try {
             val user1Submissions = REPOSITORY.findByUserId(user1)
 
@@ -84,9 +84,9 @@ class SubmissionsRepositorySpec {
 
     @Test
     fun finds_all_submissions_for_given_problem_id() {
-        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFibInKotlin)
-        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFibInKotlin)
-        val submission3 = REPOSITORY.addOrUpdate(user2SubmissionForTwoSumInKotlin)
+        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFib)
+        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFib)
+        val submission3 = REPOSITORY.addOrUpdate(user2SubmissionForTwoSum)
 
         try {
             val fibSubmissions = REPOSITORY.findByProblemId("fib")
@@ -103,10 +103,10 @@ class SubmissionsRepositorySpec {
 
     @Test
     fun finds_all_submissions() {
-        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFibInKotlin)
-        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFibInKotlin)
-        val submission3 = REPOSITORY.addOrUpdate(user2SubmissionForTwoSumInKotlin)
-        val submission4 = REPOSITORY.addOrUpdate(user1SubmissionForFibInJava)
+        val submission1 = REPOSITORY.addOrUpdate(user1SubmissionForFib)
+        val submission2 = REPOSITORY.addOrUpdate(user2SubmissionForFib)
+        val submission3 = REPOSITORY.addOrUpdate(user2SubmissionForTwoSum)
+        val submission4 = REPOSITORY.addOrUpdate(user1SubmissionForTwoSum)
 
         try {
             val fibSubmissions = REPOSITORY.findAll()
@@ -130,13 +130,12 @@ class SubmissionsRepositorySpec {
         assertThat(submissions).isEmpty()
     }
 
-    private fun submission(problemId: String, userId: String, language: String, submissionId: String) =
+    private fun submission(problemId: String, userId: String, submissionId: String) =
             Submission(
                     problemId,
                     "class Solution",
                     "ACCEPTED",
                     userId,
-                    language,
                     submissionId,
                     LocalDateTime.now().toString(),
                     0.5,
@@ -149,8 +148,8 @@ class SubmissionsRepositorySpec {
     private val user1 = "User#1"
     private val user2 = "User#2"
 
-    private val user1SubmissionForFibInKotlin = submission("fib", user1, "kotlin", "1")
-    private val user1SubmissionForFibInJava = submission("fib", user1, "java", "2")
-    private val user2SubmissionForFibInKotlin = submission("fib", user2, "kotlin", "3")
-    private val user2SubmissionForTwoSumInKotlin = submission("2-sum", user2, "kotlin", "4")
+    private val user1SubmissionForFib = submission("fib", user1, "1")
+    private val user1SubmissionForTwoSum = submission("2-sum", user1, "2")
+    private val user2SubmissionForFib = submission("fib", user2, "3")
+    private val user2SubmissionForTwoSum = submission("2-sum", user2, "4")
 }

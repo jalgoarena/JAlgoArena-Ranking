@@ -85,9 +85,9 @@ class RankingControllerSpec {
         given(problemsRepository.findAll()).willReturn(emptyList())
 
         given(rankingCalculator.problemRanking("fib", emptyList(), emptyList())).willReturn(listOf(
-                ProblemRankEntry("julia", 10.0, 0.0001, "java"),
-                ProblemRankEntry("joe", 10.0, 0.001, "java"),
-                ProblemRankEntry("mikołaj", 10.0, 0.01, "java")
+                ProblemRankEntry("julia", 10.0, 0.0001),
+                ProblemRankEntry("joe", 10.0, 0.001),
+                ProblemRankEntry("mikołaj", 10.0, 0.01)
         ))
 
         webTestClient.get()
@@ -103,8 +103,8 @@ class RankingControllerSpec {
             Submission(
                     problemId,
                     "class Solution",
-                    "ACCEPTED", userId,
-                    "java",
+                    "ACCEPTED",
+                    userId,
                     "2",
                     LocalDateTime.now().toString(),
                     0.5,

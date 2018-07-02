@@ -57,7 +57,6 @@ class BasicScoreCalculatorSpec {
                     DUMMY_SOURCE_CODE,
                     STATUS_ACCEPTED,
                     "0-0",
-                    "java",
                     "2",
                     LocalDateTime.now().toString(),
                     elapsedTime,

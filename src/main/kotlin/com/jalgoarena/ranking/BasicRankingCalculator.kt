@@ -21,7 +21,7 @@ class BasicRankingCalculator(
             val userSubmissionsCount = stats.count[user.id].orEmpty()
 
             val userSubmissions = submissions
-                    .filter { it.userId == user.id }
+                    .filter { it.userId == user.id && it.statusCode == "ACCEPTED"}
                     .sortedBy { it.elapsedTime }
                     .distinctBy { it.problemId }
             val solvedProblems = userSubmissions.map { it.problemId }
@@ -49,17 +49,16 @@ class BasicRankingCalculator(
             ProblemRankEntry(
                     user.username,
                     score(listOf(submission), problems, userSubmissionsCount),
-                    submission.elapsedTime,
-                    submission.language
+                    submission.elapsedTime
             )
         }.sortedBy { it.elapsedTime }.distinctBy { it.hacker }
     }
 
-    private fun score(userSubmissions: List<Submission>, problems: List<Problem>, userSubmissionsCount: Map<String, Map<String, Int>>): Double {
+    private fun score(userSubmissions: List<Submission>, problems: List<Problem>, userSubmissionsCount: Map<String, Int>): Double {
         return userSubmissions.sumByDouble { userSubmission ->
             val problem = problems.first { it.id == userSubmission.problemId }
-            val problemSubmissionsCount = userSubmissionsCount[problem.id].orEmpty()
-            calculate(userSubmission, problem, problemSubmissionsCount[userSubmission.language] ?: 1)
+            val problemSubmissionsCount = userSubmissionsCount[problem.id]
+            calculate(userSubmission, problem, problemSubmissionsCount ?: 1)
         }
     }
 }

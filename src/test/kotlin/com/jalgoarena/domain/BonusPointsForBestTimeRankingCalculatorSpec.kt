@@ -30,7 +30,7 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
         problemsRepository = mock(ProblemsRepository::class.java)
         submissionsClient = mock(SubmissionsClient::class.java)
 
-        val count = mutableMapOf<String, Map<String, Map<String, Int>>>()
+        val count = mutableMapOf<String, Map<String, Int>>()
 
         count[USER_MIKOLAJ.id] = mutableMapOf()
         count[USER_JOE.id] = mutableMapOf()
@@ -115,10 +115,10 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
         val rankingCalculator = bonusPointsForBestTimeRankingCalculator(submissionsRepository)
 
         assertThat(rankingCalculator.problemRanking("fib", USERS, problemsRepository.findAll())).isEqualTo(listOf(
-                ProblemRankEntry("julia", 11.0, 0.0001, "java"),
-                ProblemRankEntry("joe", 10.0, 0.001, "java"),
-                ProblemRankEntry("mikołaj", 10.0, 0.01, "java"),
-                ProblemRankEntry("tom", 10.0, 0.1, "java")
+                ProblemRankEntry("julia", 11.0, 0.0001),
+                ProblemRankEntry("joe", 10.0, 0.001),
+                ProblemRankEntry("mikołaj", 10.0, 0.01),
+                ProblemRankEntry("tom", 10.0, 0.1)
         ))
     }
 
@@ -134,7 +134,6 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
                     DUMMY_SOURCE_CODE,
                     STATUS_ACCEPTED,
                     userId,
-                    "java",
                     "2",
                     LocalDateTime.now().toString(),
                     elapsedTime,

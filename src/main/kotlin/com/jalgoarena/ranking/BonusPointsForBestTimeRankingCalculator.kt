@@ -36,8 +36,7 @@ class BonusPointsForBestTimeRankingCalculator(
             ProblemRankEntry(
                     problemRankEntry.hacker,
                     problemRankEntry.score + bonusPoints[user.id] as Double,
-                    problemRankEntry.elapsedTime,
-                    problemRankEntry.language
+                    problemRankEntry.elapsedTime
             )
         }.sortedBy { it.elapsedTime }
     }

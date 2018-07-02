@@ -30,14 +30,12 @@ class ProblemRankEntrySerializationTest {
 
     private val PROBLEM_RANK_ENTRY = ProblemRankEntry(
             hacker = "mikołaj",
-            language = "java",
             elapsedTime = 0.12345,
             score = 22.5
     )
 
     private val PROBLEM_RANK_ENTRY_JSON = """{
   "hacker": "mikołaj",
-  "language": "java",
   "elapsedTime": 0.12345,
   "score": 22.5
 }
