@@ -9,4 +9,4 @@ VOLUME /app/RankingStore
 
 EXPOSE 5006
 
-CMD ["/usr/bin/java", "-jar", "/app/jalgoarena-ranking-*.jar"]
+CMD java -jar /app/jalgoarena-ranking-*.jar
