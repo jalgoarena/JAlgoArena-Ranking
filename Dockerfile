@@ -9,4 +9,4 @@ VOLUME /app/RankingStore
 
 EXPOSE 5006
 
-CMD java -XX:+PrintFlagsFinal $JAVA_OPTS -jar /app/jalgoarena-ranking-*.jar
+CMD java $JAVA_OPTS -jar /app/jalgoarena-ranking-*.jar
