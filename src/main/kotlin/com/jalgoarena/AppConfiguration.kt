@@ -1,22 +1,27 @@
 package com.jalgoarena
 
+import com.jalgoarena.data.ProblemsRepository
 import com.jalgoarena.data.SubmissionsRepository
-import com.jalgoarena.ranking.*
-import com.jalgoarena.web.ProblemsClient
-import com.jalgoarena.web.SubmissionsClient
-import org.springframework.cloud.client.loadbalancer.LoadBalanced
+import com.jalgoarena.ranking.BasicRankingCalculator
+import com.jalgoarena.ranking.BasicScoreCalculator
+import com.jalgoarena.ranking.BonusPointsForBestTimeRankingCalculator
+import com.jalgoarena.ranking.RankingCalculator
+import com.jalgoarena.web.*
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.client.RestOperations
 import org.springframework.web.client.RestTemplate
 
 @Configuration
 open class AppConfiguration {
 
+    @Value("\${jalgoarena.api.url}")
+    private lateinit var jalgoarenaApiUrl: String
+
     @Bean
     open fun rankingCalculator(
             submissionsRepository : SubmissionsRepository,
-            problemsClient: ProblemsClient,
+            problemsClient: ProblemsRepository,
             submissionsClient: SubmissionsClient
     ): RankingCalculator {
         val scoreCalculator = BasicScoreCalculator()
@@ -27,7 +32,15 @@ open class AppConfiguration {
         )
     }
 
-    @LoadBalanced
     @Bean
-    open fun restTemplate(): RestOperations = RestTemplate()
+    open fun usersClient(): UsersClient =
+            HttpUsersClient(RestTemplate(), jalgoarenaApiUrl)
+
+    @Bean
+    open fun submissionsClient(): SubmissionsClient =
+            HttpSubmissionsClient(RestTemplate(), jalgoarenaApiUrl)
+
+    @Bean
+    open fun problemsClient(): ProblemsRepository =
+            ProblemsClient(RestTemplate(), jalgoarenaApiUrl)
 }

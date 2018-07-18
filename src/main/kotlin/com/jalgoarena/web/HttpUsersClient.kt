@@ -5,18 +5,17 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.stereotype.Service
 import org.springframework.web.client.RestOperations
-import javax.inject.Inject
 
-@Service
 class HttpUsersClient(
-        @Inject private val restTemplate: RestOperations
+        private val restTemplate: RestOperations,
+        private val jalgoarenaApiUrl: String
 ) : UsersClient {
+
 
     override fun findAllUsers() = handleExceptions(returnOnException = emptyList()) {
         restTemplate.getForObject(
-                "http://jalgoarena-auth/users", Array<User>::class.java)!!.asList()
+                "$jalgoarenaApiUrl/auth/users", Array<User>::class.java)!!.asList()
     }
 
     override fun findUser(token: String) = handleExceptions(returnOnException = null) {
@@ -27,7 +26,7 @@ class HttpUsersClient(
         val entity = HttpEntity<HttpHeaders>(headers)
 
         val response = restTemplate.exchange(
-                "http://jalgoarena-auth/api/user", HttpMethod.GET, entity, User::class.java)
+                "$jalgoarenaApiUrl/auth/api/user", HttpMethod.GET, entity, User::class.java)
         response.body
     }
 

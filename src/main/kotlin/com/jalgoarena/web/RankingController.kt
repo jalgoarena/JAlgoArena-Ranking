@@ -5,17 +5,17 @@ import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.domain.SolvedRatioEntry
 import com.jalgoarena.domain.Submission
 import com.jalgoarena.ranking.RankingCalculator
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
-import javax.inject.Inject
 
 @RestController
 class RankingController(
-        @Inject private val rankingCalculator: RankingCalculator,
-        @Inject private val usersClient: UsersClient,
-        @Inject private val problemsRepository: ProblemsRepository,
-        @Inject private val submissionsRepository: SubmissionsRepository
+        @Autowired private val rankingCalculator: RankingCalculator,
+        @Autowired private val usersClient: UsersClient,
+        @Autowired private val problemsRepository: ProblemsRepository,
+        @Autowired private val submissionsRepository: SubmissionsRepository
 ) {
 
     @GetMapping("/ranking", produces = ["application/json"])
