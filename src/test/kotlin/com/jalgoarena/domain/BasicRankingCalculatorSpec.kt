@@ -97,12 +97,14 @@ class BasicRankingCalculatorSpec {
                 Problem("fib", 1, 1)
         ))
 
-        given(submissionsRepository.findByProblemId("fib")).willReturn(listOf(
+        val submissions = listOf(
                 submission("fib", 0.01, USER_MIKOLAJ.id),
                 submission("fib", 0.0001, USER_JULIA.id),
                 submission("fib", 0.001, USER_JOE.id),
                 submission("fib", 0.1, USER_TOM.id)
-        ))
+        )
+        given(submissionsRepository.findByProblemId("fib")).willReturn(submissions)
+        given(submissionsRepository.findAll()).willReturn(submissions)
 
         val rankingCalculator = basicRankingCalculator(submissionsRepository)
 
@@ -110,6 +112,34 @@ class BasicRankingCalculatorSpec {
                 ProblemRankEntry("julia", 10.0, 0.0001),
                 ProblemRankEntry("joe", 10.0, 0.001),
                 ProblemRankEntry("mikołaj", 10.0, 0.01),
+                ProblemRankEntry("tom", 10.0, 0.1)
+        ))
+    }
+
+    @Test
+    fun returns_problem_ranking_sorted_by_times_considering_duplicates() {
+        given(problemsRepository.findAll()).willReturn(listOf(
+                Problem("fib", 1, 1)
+        ))
+
+        val submissions = listOf(
+                submission("fib", 0.01, USER_MIKOLAJ.id),
+                submission("fib", 0.1, USER_MIKOLAJ.id),
+                submission("fib", 0.0001, USER_JULIA.id),
+                submission("fib", 0.001, USER_JULIA.id),
+                submission("fib", 0.001, USER_JOE.id),
+                submission("fib", 0.1, USER_TOM.id)
+        )
+
+        given(submissionsRepository.findAll()).willReturn(submissions)
+        given(submissionsRepository.findByProblemId("fib")).willReturn(submissions)
+
+        val rankingCalculator = basicRankingCalculator(submissionsRepository)
+
+        assertThat(rankingCalculator.problemRanking("fib", USERS, problemsRepository.findAll())).isEqualTo(listOf(
+                ProblemRankEntry("julia", 9.0, 0.0001),
+                ProblemRankEntry("joe", 10.0, 0.001),
+                ProblemRankEntry("mikołaj", 9.0, 0.01),
                 ProblemRankEntry("tom", 10.0, 0.1)
         ))
     }
