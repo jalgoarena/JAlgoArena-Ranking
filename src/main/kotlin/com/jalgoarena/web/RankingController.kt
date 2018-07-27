@@ -21,7 +21,9 @@ class RankingController(
 
     @GetMapping("/ranking", produces = ["application/json"])
     fun ranking() = rankingCalculator.ranking(
-            users = usersClient.findAllUsers().filter { it.username != "admin" },
+            users = usersClient.findAllUsers().filter {
+                it.username.toLowerCase() != "admin"
+            },
             submissions = acceptedWithBestTimes(submissionsRepository.findAll()),
             problems = problemsRepository.findAll()
     )
@@ -30,7 +32,9 @@ class RankingController(
     fun problemRanking(@PathVariable problemId: String) =
             rankingCalculator.problemRanking(
                     problemId = problemId,
-                    users = usersClient.findAllUsers(),
+                    users = usersClient.findAllUsers().filter {
+                        it.username.toLowerCase() != "admin"
+                    },
                     problems = problemsRepository.findAll())
 
     @GetMapping("/solved-ratio", produces = ["application/json"])
