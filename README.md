@@ -3,10 +3,7 @@
 JAlgoArena Ranking is service dedicated for collecting accepted users submissions with best results and exposing that data together with calculating ranking for all problems as well as for particular problem.
 
 - [Introduction](#introduction)
-- [REST API](#rest-api)
-- [Components](#components)
-- [Continuous Delivery](#continuous-delivery)
-- [Infrastructure](#infrastructure)
+- [API](#api)
 - [Running Locally](#running-locally)
 - [Notes](#notes)
 
@@ -23,6 +20,71 @@ JAlgoArena Ranking is service dedicated for collecting accepted users submission
 | [GET /ranking] | Get general ranking list |
 | [GET /ranking/:problemId] | Get ranking for particular problem |
 | [GET /solved-ratio] | Get all problems solved by users ratio |
+
+## API
+
+#### Get individual user ranking
+
+  _Returns list of users sorted by their score for individual ranking_
+
+|URL|Method|
+|---|------|
+|_/ranking_|`GET`|
+
+* **Success Response:**
+
+  _Sorted list of users based on their score_
+
+  * **Code:** 200 <br />
+    **Content:** `[{"hacker":"mikolaj19","score":78.0,"solvedProblems":["sum-lists","string-rotation","2-sum","word-ladder"],"region":"Kraków","team":"Team B"},{"hacker":"mikolaj16,...},...]`
+
+* **Sample Call:**
+
+  ```bash
+  curl http://localhost:5006/ranking
+  ```
+
+#### Get problem user ranking
+
+  _Returns list of users sorted by their score for problem ranking_
+
+|URL|Method|
+|---|------|
+|_/ranking/problem/:problemId_|`GET`|
+
+* **Success Response:**
+
+  _Sorted list of users based on their score_
+
+  * **Code:** 200 <br />
+    **Content:** `[{"hacker":"julia73","score":11.0,"elapsedTime":0.008186},{"hacker":"madzia70","score":10.0,",...},...]`
+
+* **Sample Call:**
+
+  ```bash
+  curl http://localhost:5006/ranking/problem/fib
+  ```
+  
+#### Get stats of problems solved by users ratio
+
+  _Returns stats of amount of users solutions per problem_
+
+|URL|Method|
+|---|------|
+|_/solved-ratio_|`GET`|
+
+* **Success Response:**
+
+  _Solved problems ratio_
+
+  * **Code:** 200 <br />
+    **Content:** `[{"problemId":"2-sum","solutionsCount":12},{"problemId":"fib","solutionsCount":11},...]`
+
+* **Sample Call:**
+
+  ```bash
+  curl http://localhost:5006/solved-ratio
+  ```
 
 ## Running locally
 
