@@ -99,7 +99,7 @@ class RankingControllerSpec {
                 .jsonPath("$.length()").isEqualTo(3)
     }
 
-    private fun submissionForProblem(problemId: String, userId: String, id: String? = null) =
+    private fun submissionForProblem(problemId: String, userId: String, id: Int? = null) =
             Submission(
                     problemId,
                     "class Solution",

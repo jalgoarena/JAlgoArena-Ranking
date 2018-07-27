@@ -5,6 +5,7 @@ import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.domain.SolvedRatioEntry
 import com.jalgoarena.domain.Submission
 import com.jalgoarena.ranking.RankingCalculator
+import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -21,7 +22,7 @@ class RankingController(
     @GetMapping("/ranking", produces = ["application/json"])
     fun ranking() = rankingCalculator.ranking(
             users = usersClient.findAllUsers().filter { it.username != "admin" },
-            submissions = submissionsRepository.findAllAccepted(),
+            submissions = acceptedWithBestTimes(submissionsRepository.findAll()),
             problems = problemsRepository.findAll()
     )
 

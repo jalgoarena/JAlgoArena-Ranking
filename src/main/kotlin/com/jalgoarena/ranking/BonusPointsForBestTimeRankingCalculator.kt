@@ -2,6 +2,7 @@ package com.jalgoarena.ranking
 
 import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.domain.*
+import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
 
 class BonusPointsForBestTimeRankingCalculator(
         private val submissionsRepository: SubmissionsRepository,
@@ -26,7 +27,7 @@ class BonusPointsForBestTimeRankingCalculator(
     }
 
     override fun problemRanking(problemId: String, users: List<User>, problems: List<Problem>): List<ProblemRankEntry> {
-        val problemSubmissions = submissionsRepository.findByProblemId(problemId)
+        val problemSubmissions = acceptedWithBestTimes(submissionsRepository.findByProblemId(problemId))
 
         val bonusPoints = calculateBonusPointsForFastestSolutions(problemSubmissions, users)
 

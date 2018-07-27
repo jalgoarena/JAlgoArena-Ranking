@@ -6,12 +6,10 @@ import com.jalgoarena.ranking.BasicRankingCalculator
 import com.jalgoarena.ranking.BasicScoreCalculator
 import com.jalgoarena.ranking.BonusPointsForBestTimeRankingCalculator
 import com.jalgoarena.ranking.RankingCalculator
-import com.jalgoarena.web.SubmissionsClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 
@@ -20,7 +18,6 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
     private lateinit var submissionsRepository: SubmissionsRepository
     private lateinit var problemsRepository: ProblemsRepository
     private lateinit var rankingCalculator: RankingCalculator
-    private lateinit var submissionsClient: SubmissionsClient
     private lateinit var submissionStats: SubmissionStats
 
     @Before
@@ -28,7 +25,6 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
         submissionsRepository = mock(SubmissionsRepository::class.java)
         rankingCalculator = mock(RankingCalculator::class.java)
         problemsRepository = mock(ProblemsRepository::class.java)
-        submissionsClient = mock(SubmissionsClient::class.java)
 
         val count = mutableMapOf<String, Map<String, Int>>()
 
@@ -38,7 +34,6 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
         count[USER_TOM.id] = mutableMapOf()
 
         submissionStats = SubmissionStats(count)
-        Mockito.`when`(submissionsClient.stats()).thenReturn(submissionStats)
     }
 
     @Test
@@ -125,7 +120,7 @@ class BonusPointsForBestTimeRankingCalculatorSpec {
     private fun bonusPointsForBestTimeRankingCalculator(repository: SubmissionsRepository) =
             BonusPointsForBestTimeRankingCalculator(
                     repository,
-                    BasicRankingCalculator(submissionsClient, repository, BasicScoreCalculator())
+                    BasicRankingCalculator(repository, BasicScoreCalculator())
             )
 
     private fun submission(problemId: String, elapsedTime: Double, userId: String) =

@@ -4,12 +4,10 @@ import com.jalgoarena.data.ProblemsRepository
 import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.ranking.BasicRankingCalculator
 import com.jalgoarena.ranking.BasicScoreCalculator
-import com.jalgoarena.web.SubmissionsClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 
@@ -17,14 +15,12 @@ class BasicRankingCalculatorSpec {
 
     private lateinit var submissionsRepository: SubmissionsRepository
     private lateinit var problemsRepository: ProblemsRepository
-    private lateinit var submissionsClient: SubmissionsClient
     private lateinit var submissionStats: SubmissionStats
 
     @Before
     fun setUp() {
         submissionsRepository = mock(SubmissionsRepository::class.java)
         problemsRepository = mock(ProblemsRepository::class.java)
-        submissionsClient = mock(SubmissionsClient::class.java)
         val count = mutableMapOf<String, Map<String, Int>>()
 
         count[USER_MIKOLAJ.id] = mutableMapOf()
@@ -33,7 +29,6 @@ class BasicRankingCalculatorSpec {
         count[USER_TOM.id] = mutableMapOf()
 
         submissionStats = SubmissionStats(count)
-        `when`(submissionsClient.stats()).thenReturn(submissionStats)
     }
 
     @Test
@@ -120,7 +115,7 @@ class BasicRankingCalculatorSpec {
     }
 
     private fun basicRankingCalculator(repository: SubmissionsRepository) =
-            BasicRankingCalculator(submissionsClient, repository, BasicScoreCalculator())
+            BasicRankingCalculator(repository, BasicScoreCalculator())
 
     private fun submission(problemId: String, elapsedTime: Double, userId: String) =
             Submission(

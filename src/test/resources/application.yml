@@ -3,11 +3,9 @@ jalgoarena:
     url: http://localhost:5001
 
 spring:
-  kafka:
-    bootstrap-servers: ${spring.embedded.kafka.brokers}
-    consumer:
-          group-id: ranking
-    producer:
-      retries: 3
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  datasource:
+      url: jdbc:h2:mem:test
+    jpa:
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.H2Dialect

@@ -21,11 +21,10 @@ open class AppConfiguration {
     @Bean
     open fun rankingCalculator(
             submissionsRepository : SubmissionsRepository,
-            problemsClient: ProblemsRepository,
-            submissionsClient: SubmissionsClient
+            problemsClient: ProblemsRepository
     ): RankingCalculator {
         val scoreCalculator = BasicScoreCalculator()
-        val rankingCalculator = BasicRankingCalculator(submissionsClient, submissionsRepository, scoreCalculator)
+        val rankingCalculator = BasicRankingCalculator(submissionsRepository, scoreCalculator)
 
         return BonusPointsForBestTimeRankingCalculator(
                 submissionsRepository, rankingCalculator
@@ -35,10 +34,6 @@ open class AppConfiguration {
     @Bean
     open fun usersClient(): UsersClient =
             HttpUsersClient(RestTemplate(), jalgoarenaApiUrl)
-
-    @Bean
-    open fun submissionsClient(): SubmissionsClient =
-            HttpSubmissionsClient(RestTemplate(), jalgoarenaApiUrl)
 
     @Bean
     open fun problemsClient(): ProblemsRepository =
