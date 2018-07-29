@@ -39,11 +39,11 @@ class RankingControllerSpec {
     @Test
     fun returns_200_and_submissions_solved_ratio_list() {
         given(submissionsRepository.findAll()).willReturn(listOf(
-                submissionForProblem("fib", "user1"),
-                submissionForProblem("fib", "user2"),
-                submissionForProblem("fib", "user3"),
-                submissionForProblem("2-sum", "user1"),
-                submissionForProblem("2-sum", "user2")
+                submissionForProblem("fib", "user1", 1),
+                submissionForProblem("fib", "user2", 2),
+                submissionForProblem("fib", "user3", 3),
+                submissionForProblem("2-sum", "user1", 4),
+                submissionForProblem("2-sum", "user2", 5)
         ))
 
         webTestClient.get()
@@ -99,20 +99,20 @@ class RankingControllerSpec {
                 .jsonPath("$.length()").isEqualTo(3)
     }
 
-    private fun submissionForProblem(problemId: String, userId: String, id: Int? = null) =
+    private fun submissionForProblem(problemId: String, userId: String, id: Int) =
             Submission(
                     problemId,
                     "class Solution",
                     "ACCEPTED",
                     userId,
                     "2",
-                    LocalDateTime.now().toString(),
+                    LocalDateTime.now(),
                     0.5,
                     10L,
                     null,
                     1,
                     0,
-                    null,
+                    "dummy_token",
                     id
             )
 }

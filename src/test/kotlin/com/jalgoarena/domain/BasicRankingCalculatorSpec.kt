@@ -154,7 +154,7 @@ class BasicRankingCalculatorSpec {
                     STATUS_ACCEPTED,
                     userId,
                     "2",
-                    LocalDateTime.now().toString(),
+                    LocalDateTime.now(),
                     elapsedTime,
                     10L,
                     null,

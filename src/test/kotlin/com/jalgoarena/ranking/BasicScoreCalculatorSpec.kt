@@ -58,13 +58,13 @@ class BasicScoreCalculatorSpec {
                     STATUS_ACCEPTED,
                     "0-0",
                     "2",
-                    LocalDateTime.now().toString(),
+                    LocalDateTime.now(),
                     elapsedTime,
                     10L,
                     null,
                     1,
                     0,
-                    null
+                    "dummy_token"
             )
 
     companion object {
