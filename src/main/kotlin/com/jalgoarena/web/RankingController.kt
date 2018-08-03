@@ -15,6 +15,9 @@ import org.springframework.transaction.TransactionException
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RestController
 class RankingController(
@@ -33,6 +36,22 @@ class RankingController(
                     it.username.toLowerCase() != "admin"
                 },
                 submissions = acceptedWithBestTimes(submissionsRepository.findAll()),
+                problems = problemsRepository.findAll()
+        )
+    } catch (e: TransactionException) {
+        logger.error("Cannot connect to database", e)
+        listOf()
+    }
+
+    @GetMapping("/ranking/{date}", produces = ["application/json"])
+    fun rankingTillDate(@PathVariable date: String): List<RankEntry> = try {
+        val tillDate = LocalDate.parse(date, YYYY_MM_DD).plusDays(1).atStartOfDay()
+
+        rankingCalculator.ranking(
+                users = usersClient.findAllUsers().filter {
+                    it.username.toLowerCase() != "admin"
+                },
+                submissions = acceptedWithBestTimes(submissionsRepository.findBySubmissionTimeLessThan(tillDate)),
                 problems = problemsRepository.findAll()
         )
     } catch (e: TransactionException) {
@@ -68,4 +87,8 @@ class RankingController(
                     .map {
                         SolvedRatioEntry(it.key, it.value.count())
                     }
+
+    companion object {
+        private val YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    }
 }
