@@ -33,7 +33,7 @@ class HttpUsersClient(
     private fun <T> handleExceptions(returnOnException: T, body: () -> T) = try {
         body()
     } catch(e: Exception) {
-        LOG.error("Error in querying jalgoarena auth service", e)
+        LOG.error("[err] GET $jalgoarenaApiUrl/auth/users: ", e)
         returnOnException
     }
 
