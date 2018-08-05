@@ -53,6 +53,7 @@ class BasicScoreCalculatorSpec {
 
     private fun submission(elapsedTime: Double) =
             Submission(
+                    id = 1,
                     problemId = "fib",
                     statusCode = STATUS_ACCEPTED,
                     userId = "0-0",
@@ -61,7 +62,6 @@ class BasicScoreCalculatorSpec {
             )
 
     companion object {
-        private const val DUMMY_SOURCE_CODE = "dummy source code"
         private const val STATUS_ACCEPTED = "ACCEPTED"
     }
 }

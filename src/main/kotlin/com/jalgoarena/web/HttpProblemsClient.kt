@@ -1,15 +1,18 @@
 package com.jalgoarena.web
 
-import com.jalgoarena.data.ProblemsRepository
 import com.jalgoarena.domain.Problem
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.client.RestOperations
 
-open class ProblemsClient(
+interface ProblemsClient {
+    fun findAll(): List<Problem>
+}
+
+open class HttpProblemsClient(
         private val restTemplate: RestOperations,
         private val jalgoarenaApiUrl: String
-) : ProblemsRepository {
+) : ProblemsClient {
 
     @Cacheable("problems")
     override fun findAll(): List<Problem> = handleExceptions(returnOnException = emptyList()) {

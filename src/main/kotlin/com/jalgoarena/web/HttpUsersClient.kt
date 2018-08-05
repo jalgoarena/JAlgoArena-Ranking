@@ -7,6 +7,11 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.web.client.RestOperations
 
+interface UsersClient {
+    fun findAllUsers(): List<User>
+    fun findUser(token: String): User?
+}
+
 class HttpUsersClient(
         private val restTemplate: RestOperations,
         private val jalgoarenaApiUrl: String

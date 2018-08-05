@@ -1,7 +1,5 @@
 package com.jalgoarena.web
 
-import com.jalgoarena.data.ProblemsRepository
-import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.domain.ProblemRankEntry
 import com.jalgoarena.domain.RankEntry
 import com.jalgoarena.domain.Submission
@@ -31,14 +29,14 @@ class RankingControllerSpec {
     private lateinit var rankingCalculator: RankingCalculator
 
     @MockBean
-    private lateinit var problemsRepository: ProblemsRepository
+    private lateinit var problemsClient: ProblemsClient
 
     @MockBean
-    private lateinit var submissionsRepository: SubmissionsRepository
+    private lateinit var submissionsClient: SubmissionsClient
 
     @Test
     fun returns_200_and_submissions_solved_ratio_list() {
-        given(submissionsRepository.findAll()).willReturn(listOf(
+        given(submissionsClient.findAll()).willReturn(listOf(
                 submissionForProblem("fib", "user1", 1),
                 submissionForProblem("fib", "user2", 2),
                 submissionForProblem("fib", "user3", 3),
@@ -60,8 +58,8 @@ class RankingControllerSpec {
     @Test
     fun returns_200_and_ranking() {
         given(usersClient.findAllUsers()).willReturn(emptyList())
-        given(submissionsRepository.findAll()).willReturn(emptyList())
-        given(problemsRepository.findAll()).willReturn(emptyList())
+        given(submissionsClient.findAll()).willReturn(emptyList())
+        given(problemsClient.findAll()).willReturn(emptyList())
 
         given(rankingCalculator.ranking(emptyList(), emptyList(), emptyList())).willReturn(listOf(
                 RankEntry("mikołaj", 40.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team"),
@@ -82,7 +80,7 @@ class RankingControllerSpec {
     @Test
     fun returns_200_and_problem_ranking() {
         given(usersClient.findAllUsers()).willReturn(emptyList())
-        given(problemsRepository.findAll()).willReturn(emptyList())
+        given(problemsClient.findAll()).willReturn(emptyList())
 
         given(rankingCalculator.problemRanking("fib", emptyList(), emptyList())).willReturn(listOf(
                 ProblemRankEntry("julia", 10.0, 0.0001),

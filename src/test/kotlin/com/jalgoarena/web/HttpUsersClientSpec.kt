@@ -53,9 +53,9 @@ class HttpUsersClientSpec {
 
     companion object {
         private const val DUMMY_TOKEN = "Bearer sdaw9awdw"
-        private const val USER_ROLE = "USER"
+
         private val USER = User(
-                "mikolaj", "Kraków", "Tyniec Team", USER_ROLE, "0-0"
+                "mikolaj", "Kraków", "Tyniec Team",  "0-0"
         )
     }
 }
