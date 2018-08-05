@@ -9,6 +9,15 @@ server:
   port: ${PORT:5006}
 
 spring:
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092,localhost:9093,localhost:9094}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:ranking}
+    producer:
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
   jackson:
     deserialization:
       ADJUST_DATES_TO_CONTEXT_TIME_ZONE: false

@@ -5,6 +5,7 @@ import com.jalgoarena.ranking.RankingCalculator
 import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
@@ -12,29 +13,32 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @RestController
-class RankingController(
+open class RankingController(
         @Autowired private val rankingCalculator: RankingCalculator,
         @Autowired private val usersClient: UsersClient,
         @Autowired private val problemsClient: ProblemsClient,
         @Autowired private val submissionsClient: SubmissionsClient
 ) {
 
+    @Cacheable("ranking")
     @GetMapping("/ranking", produces = ["application/json"])
-    fun ranking() = rankingCalculator.ranking(
+    open fun ranking() = rankingCalculator.ranking(
             users = allUsersWithoutAdmin(),
             submissions = acceptedWithBestTimes(submissionsClient.findAll()),
             problems = problemsClient.findAll()
     )
 
+    @Cacheable("rankingTillDate", key = "#date")
     @GetMapping("/ranking/{date}", produces = ["application/json"])
-    fun rankingTillDate(@PathVariable date: String) = rankingCalculator.ranking(
+    open fun rankingTillDate(@PathVariable date: String) = rankingCalculator.ranking(
             users = allUsersWithoutAdmin(),
             submissions = acceptedWithBestTimes(submissionsClient.findBySubmissionTimeLessThan(date)),
             problems = problemsClient.findAll()
     )
 
+    @Cacheable("startDate")
     @GetMapping("/ranking/startDate", produces = ["application/json"])
-    fun rankingStartDate(): String {
+    open fun rankingStartDate(): String {
         val submission = submissionsClient.findAll().minBy { it.submissionTime }
 
         return if (submission == null) {
@@ -44,15 +48,17 @@ class RankingController(
         }
     }
 
+    @Cacheable("problemRanking", key = "#problemId")
     @GetMapping("/ranking/problem/{problemId}", produces = ["application/json"])
-    fun problemRanking(@PathVariable problemId: String) = rankingCalculator.problemRanking(
+    open fun problemRanking(@PathVariable problemId: String) = rankingCalculator.problemRanking(
             problemId = problemId,
             users = allUsersWithoutAdmin(),
             problems = problemsClient.findAll()
     )
 
+    @Cacheable("solvedRatio")
     @GetMapping("/solved-ratio", produces = ["application/json"])
-    fun submissionsSolvedRatio() =
+    open fun submissionsSolvedRatio() =
         calculateSubmissionsSolvedRatioAndReturnIt(submissionsClient.findAll())
 
     private fun aDayBefore(submissionTime: LocalDateTime) =
