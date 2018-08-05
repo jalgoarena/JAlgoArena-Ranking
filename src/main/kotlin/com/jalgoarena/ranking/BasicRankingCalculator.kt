@@ -32,7 +32,7 @@ class BasicRankingCalculator(
                     user.region,
                     user.team
             )
-        }.sortedByDescending { it.score }
+        }.sortedWith(compareByDescending(RankEntry::score).thenBy { it.solvedProblems.size })
     }
 
     override fun problemRanking(problemId: String, users: List<User>, problems: List<Problem>): List<ProblemRankEntry> {
