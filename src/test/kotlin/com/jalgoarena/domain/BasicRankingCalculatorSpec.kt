@@ -149,17 +149,11 @@ class BasicRankingCalculatorSpec {
 
     private fun submission(problemId: String, elapsedTime: Double, userId: String) =
             Submission(
-                    problemId,
-                    DUMMY_SOURCE_CODE,
-                    STATUS_ACCEPTED,
-                    userId,
-                    "2",
-                    LocalDateTime.now(),
-                    elapsedTime,
-                    10L,
-                    null,
-                    1,
-                    0
+                    problemId = problemId,
+                    statusCode = STATUS_ACCEPTED,
+                    userId = userId,
+                    submissionTime = LocalDateTime.now(),
+                    elapsedTime = elapsedTime
             )
 
     companion object {

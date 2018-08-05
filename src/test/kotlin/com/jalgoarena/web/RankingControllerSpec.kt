@@ -101,18 +101,11 @@ class RankingControllerSpec {
 
     private fun submissionForProblem(problemId: String, userId: String, id: Int) =
             Submission(
+                    id,
                     problemId,
-                    "class Solution",
                     "ACCEPTED",
                     userId,
-                    "2",
                     LocalDateTime.now(),
-                    0.5,
-                    10L,
-                    null,
-                    1,
-                    0,
-                    "dummy_token",
-                    id
+                    0.5
             )
 }

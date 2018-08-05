@@ -8,26 +8,16 @@ import javax.persistence.*
 @Entity
 @Table(name = "submissions")
 data class Submission(
+        @Id
+        var id: Int = -1,
         @Column(nullable = false)
         var problemId: String = "",
-        @Column(nullable = false)
-        var sourceCode: String = "",
         @Column(nullable = false)
         var statusCode: String = "NOT_FOUND",
         @Column(nullable = false)
         var userId: String = "",
-        @Column(unique = true, nullable = false)
-        var submissionId: String = "",
         @Column(nullable = false)
         var submissionTime: LocalDateTime = LocalDateTime.now(),
         @Column(nullable = false)
-        var elapsedTime: Double = -1.0,
-        @Column(nullable = false)
-        var consumedMemory: Long = 0L,
-        var errorMessage: String? = null,
-        var passedTestCases: Int? = 0,
-        var failedTestCases: Int? = 0,
-        var token: String = "",
-        @Id
-        var id: Int = -1
+        var elapsedTime: Double = -1.0
 )

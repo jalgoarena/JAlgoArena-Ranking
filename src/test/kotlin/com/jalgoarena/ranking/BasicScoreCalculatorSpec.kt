@@ -53,18 +53,11 @@ class BasicScoreCalculatorSpec {
 
     private fun submission(elapsedTime: Double) =
             Submission(
-                    "fib",
-                    DUMMY_SOURCE_CODE,
-                    STATUS_ACCEPTED,
-                    "0-0",
-                    "2",
-                    LocalDateTime.now(),
-                    elapsedTime,
-                    10L,
-                    null,
-                    1,
-                    0,
-                    "dummy_token"
+                    problemId = "fib",
+                    statusCode = STATUS_ACCEPTED,
+                    userId = "0-0",
+                    submissionTime = LocalDateTime.now(),
+                    elapsedTime = elapsedTime
             )
 
     companion object {

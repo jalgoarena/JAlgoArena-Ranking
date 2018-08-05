@@ -1,6 +1,5 @@
 package com.jalgoarena.domain
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -43,35 +42,22 @@ class SubmissionSerializationTest {
         )
 
         private val SUBMISSION = Submission(
+                id = 2,
                 problemId = "fib",
-                elapsedTime = 435.212,
-                sourceCode = "dummy source code",
                 statusCode = "ACCEPTED",
                 userId = "0-0",
-                id = 2,
-                submissionId = "2",
-                consumedMemory = 10L,
-                errorMessage = null,
                 submissionTime = SUBMISSION_TIME,
-                passedTestCases = 1,
-                failedTestCases = 0,
-                token = "dummy_token"
+                elapsedTime = 435.212
         )
 
         @Language("JSON")
         private val SUBMISSION_JSON = """{
+  "id": 2,
   "problemId": "fib",
   "elapsedTime": 435.212,
-  "sourceCode": "dummy source code",
   "statusCode": "ACCEPTED",
   "userId": "0-0",
-  "id": 2,
-  "submissionId": "2",
-  "submissionTime": "2018-07-29T08:01:01",
-  "consumedMemory": 10,
-  "passedTestCases": 1,
-  "failedTestCases": 0,
-  "token": "dummy_token"
+  "submissionTime": "2018-07-29T08:01:01"
 }
 """
     }
