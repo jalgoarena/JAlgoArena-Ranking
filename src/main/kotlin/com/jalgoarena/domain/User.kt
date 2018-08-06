@@ -9,6 +9,5 @@ data class User(
         val username: String,
         val region: String,
         val team: String,
-        val role: String,
         var id: String
 )

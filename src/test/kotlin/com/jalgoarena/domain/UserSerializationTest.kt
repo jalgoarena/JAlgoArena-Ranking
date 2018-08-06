@@ -28,14 +28,17 @@ class UserSerializationTest {
                 .isEqualTo(USER)
     }
 
-    private val USER = User("julia", "Kraków", "Tyniec Team", "USER", "0-0")
+    companion object {
+        private val USER = User("julia", "Kraków", "Tyniec Team", "0-0")
 
-    private val USER_JSON = """{
+        private const val USER_JSON = """{
   "username": "julia",
   "region": "Kraków",
   "team": "Tyniec Team",
-  "role": "USER",
   "id": "0-0"
 }
 """
+    }
+
+
 }

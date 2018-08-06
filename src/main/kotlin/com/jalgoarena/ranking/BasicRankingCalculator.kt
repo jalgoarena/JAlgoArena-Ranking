@@ -1,11 +1,11 @@
 package com.jalgoarena.ranking
 
-import com.jalgoarena.data.SubmissionsRepository
 import com.jalgoarena.domain.*
 import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
+import com.jalgoarena.web.SubmissionsClient
 
 class BasicRankingCalculator(
-        private val submissionsRepository: SubmissionsRepository,
+        private val submissionsClient : SubmissionsClient,
         private val scoreCalculator: ScoreCalculator
 ) : RankingCalculator {
 
@@ -13,7 +13,7 @@ class BasicRankingCalculator(
             users: List<User>, submissions: List<Submission>, problems: List<Problem>
     ): List<RankEntry> {
 
-        val stats = stats(submissionsRepository.findAll())
+        val stats = stats(submissionsClient.findAll())
 
         return users.map { user ->
 
@@ -32,13 +32,13 @@ class BasicRankingCalculator(
                     user.region,
                     user.team
             )
-        }.sortedByDescending { it.score }
+        }.sortedWith(compareByDescending(RankEntry::score).thenByDescending { it.solvedProblems.size })
     }
 
     override fun problemRanking(problemId: String, users: List<User>, problems: List<Problem>): List<ProblemRankEntry> {
 
-        val stats = stats(submissionsRepository.findAll())
-        val problemSubmissions = acceptedWithBestTimes(submissionsRepository.findByProblemId(problemId))
+        val stats = stats(submissionsClient.findAll())
+        val problemSubmissions = acceptedWithBestTimes(submissionsClient.findByProblemId(problemId))
 
         return problemSubmissions.map { submission ->
             val user = users.first { it.id == submission.userId }
