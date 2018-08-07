@@ -19,17 +19,10 @@ open class AppConfiguration {
     private lateinit var jalgoarenaApiUrl: String
 
     @Bean
-    open fun rankingCalculator(
-            submissionsClient : SubmissionsClient,
-            problemsClient: ProblemsClient
-    ): RankingCalculator {
-        val scoreCalculator = BasicScoreCalculator()
-        val rankingCalculator = BasicRankingCalculator(submissionsClient, scoreCalculator)
-
-        return BonusPointsForBestTimeRankingCalculator(
-                submissionsClient, rankingCalculator
-        )
-    }
+    open fun rankingCalculator(submissionsClient: SubmissionsClient, problemsClient: ProblemsClient) =
+            BonusPointsForBestTimeRankingCalculator(
+                    submissionsClient, BasicRankingCalculator(submissionsClient, BasicScoreCalculator())
+            )
 
     @Bean
     open fun usersClient(): UsersClient =

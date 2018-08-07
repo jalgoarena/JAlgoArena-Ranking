@@ -1,10 +1,7 @@
-package com.jalgoarena.domain
+package com.jalgoarena.ranking
 
+import com.jalgoarena.domain.*
 import com.jalgoarena.web.ProblemsClient
-import com.jalgoarena.ranking.BasicRankingCalculator
-import com.jalgoarena.ranking.BasicScoreCalculator
-import com.jalgoarena.ranking.BonusPointsForBestTimeRankingCalculator
-import com.jalgoarena.ranking.RankingCalculator
 import com.jalgoarena.web.SubmissionsClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
