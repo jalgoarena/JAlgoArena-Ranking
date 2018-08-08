@@ -1,9 +1,10 @@
 package com.jalgoarena.web
 
-import com.jalgoarena.domain.*
+import com.jalgoarena.domain.SolvedRatioEntry
+import com.jalgoarena.domain.Submission
+import com.jalgoarena.domain.User
 import com.jalgoarena.ranking.RankingCalculator
 import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.bind.annotation.GetMapping
@@ -59,7 +60,7 @@ open class RankingController(
     @Cacheable("solvedRatio")
     @GetMapping("/solved-ratio", produces = ["application/json"])
     open fun submissionsSolvedRatio() =
-        calculateSubmissionsSolvedRatioAndReturnIt(submissionsClient.findAll())
+        calculateSubmissionsSolvedRatioAndReturnIt(submissionsClient.findAll().filter { it.statusCode == "ACCEPTED" })
 
     private fun aDayBefore(submissionTime: LocalDateTime) =
             submissionTime.minusDays(1).format(YYYY_MM_DD)
