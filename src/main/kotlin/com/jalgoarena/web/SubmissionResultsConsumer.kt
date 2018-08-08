@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.jalgoarena.domain.GenericEvent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.CacheManager
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.util.concurrent.ListenableFutureCallback
-import org.springframework.cache.CacheManager;
 
 @Service
 class SubmissionResultsConsumer(
@@ -32,10 +33,7 @@ class SubmissionResultsConsumer(
             }
 
             logger.info("Received request for refreshing rankings: $event")
-
-            cacheManager.cacheNames.parallelStream().forEach {
-                cacheManager.getCache(it)!!.clear()
-            }
+            clearCache()
 
             val rankingEventFuture = rankingEventPublisher.send(
                 "events", objectMapper.writeValueAsString(
@@ -50,6 +48,13 @@ class SubmissionResultsConsumer(
         } catch (ex: Exception) {
             logger.error("Cannot refresh ranking: {}", message, ex)
             throw ex
+        }
+    }
+
+    @Scheduled(fixedRate = 30000, initialDelay = 30000)
+    fun clearCache() {
+        cacheManager.cacheNames.parallelStream().forEach {
+            cacheManager.getCache(it)!!.clear()
         }
     }
 
