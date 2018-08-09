@@ -1,4 +1,4 @@
-# JAlgoArena Ranking [![Build Status](https://travis-ci.org/spolnik/JAlgoArena-Ranking.svg?branch=master)](https://travis-ci.org/spolnik/JAlgoArena-Ranking) [![codecov](https://codecov.io/gh/spolnik/JAlgoArena-Ranking/branch/master/graph/badge.svg)](https://codecov.io/gh/spolnik/JAlgoArena-Ranking) [![GitHub release](https://img.shields.io/github/release/spolnik/jalgoarena-ranking.svg)]()
+# JAlgoArena Ranking [![Build Status](https://travis-ci.org/jalgoarena/JAlgoArena-Ranking.svg?branch=master)](https://travis-ci.org/jalgoarena/JAlgoArena-Ranking) [![codecov](https://codecov.io/gh/spolnik/JAlgoArena-Ranking/branch/master/graph/badge.svg)](https://codecov.io/gh/spolnik/JAlgoArena-Ranking) [![GitHub release](https://img.shields.io/github/release/spolnik/jalgoarena-ranking.svg)]()
 
 JAlgoArena Ranking is service dedicated for collecting accepted users submissions with best results and exposing that data together with calculating ranking for all problems as well as for particular problem.
 
