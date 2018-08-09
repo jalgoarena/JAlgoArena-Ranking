@@ -14,7 +14,7 @@ class BonusPointsForBestTimeRankingCalculator(
         val bonusPoints = calculateBonusPointsForFastestSolutions(submissions, users)
 
         return rankingCalculator.ranking(users, submissions, problems).map { rankEntry ->
-            val id = users.first { it.username == rankEntry.hacker }.id
+            val id = users.firstOrNull { it.username == rankEntry.hacker }?.id ?: ""
 
             RankEntry(
                     rankEntry.hacker,
