@@ -1,10 +1,7 @@
 package com.jalgoarena.web
 
-import com.jalgoarena.domain.SolvedRatioEntry
-import com.jalgoarena.domain.Submission
-import com.jalgoarena.domain.User
+import com.jalgoarena.domain.*
 import com.jalgoarena.ranking.RankingCalculator
-import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,18 +20,19 @@ open class RankingController(
 
     @Cacheable("ranking")
     @GetMapping("/ranking", produces = ["application/json"])
-    open fun ranking() = rankingCalculator.ranking(
-            users = usersClient.findAllUsers(),
-            submissions = acceptedWithBestTimes(submissionsClient.findAll()),
-            problems = problemsClient.findAll()
-    )
+    open fun ranking() =
+            rankingCalculator.ranking(
+                    users = usersClient.findAllUsers(),
+                    allSubmissions = submissionsClient.findAll(),
+                    problems = problemsClient.findAll()
+            )
 
     @Cacheable("rankingTillDate", key = "#date")
     @GetMapping("/ranking/{date}", produces = ["application/json"])
     open fun rankingTillDate(@PathVariable date: String) =
             rankingCalculator.ranking(
                     users = usersClient.findAllUsers(),
-                    submissions = acceptedWithBestTimes(submissionsClient.findBySubmissionTimeLessThan(date)),
+                    allSubmissions = submissionsClient.findBySubmissionTimeLessThan(date),
                     problems = problemsClient.findAll()
             )
 
@@ -54,9 +52,10 @@ open class RankingController(
     @GetMapping("/ranking/problem/{problemId}", produces = ["application/json"])
     open fun problemRanking(@PathVariable problemId: String) =
             rankingCalculator.problemRanking(
-                    problemId = problemId,
                     users = usersClient.findAllUsers(),
-                    problems = problemsClient.findAll()
+                    problemSubmissions = submissionsClient.findByProblemId(problemId),
+                    problems = problemsClient.findAll(),
+                    problemId = problemId
             )
 
     @Cacheable("solvedRatio")

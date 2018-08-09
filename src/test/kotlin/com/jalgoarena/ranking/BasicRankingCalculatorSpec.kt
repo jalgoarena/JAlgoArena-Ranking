@@ -1,25 +1,17 @@
 package com.jalgoarena.ranking
 
 import com.jalgoarena.domain.*
-import com.jalgoarena.web.ProblemsClient
-import com.jalgoarena.web.SubmissionsClient
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.Mockito.mock
 import java.time.LocalDateTime
 
 class BasicRankingCalculatorSpec {
 
-    private lateinit var submissionsClient : SubmissionsClient
-    private lateinit var problemsClient: ProblemsClient
     private lateinit var submissionStats: SubmissionStats
 
     @Before
     fun setUp() {
-        submissionsClient = mock(SubmissionsClient::class.java)
-        problemsClient = mock(ProblemsClient::class.java)
         val count = mutableMapOf<String, Map<String, Int>>()
 
         count[USER_MIKOLAJ.id] = mutableMapOf()
@@ -32,20 +24,16 @@ class BasicRankingCalculatorSpec {
 
     @Test
     fun returns_empty_ranking_if_no_users() {
-        given(submissionsClient.findAll()).willReturn(emptyList())
+        val rankingCalculator = basicRankingCalculator()
 
-        val rankingCalculator = basicRankingCalculator(submissionsClient)
-
-        assertThat(rankingCalculator.ranking(emptyList(), submissionsClient.findAll(), problemsClient.findAll())).isEqualTo(emptyList<RankEntry>())
+        assertThat(rankingCalculator.ranking(emptyList(), emptyList(), emptyList())).isEqualTo(emptyList<RankEntry>())
     }
 
     @Test
     fun returns_all_users_with_0_score_if_no_submissions() {
-        given(submissionsClient.findAll()).willReturn(emptyList())
+        val rankingCalculator = basicRankingCalculator()
 
-        val rankingCalculator = basicRankingCalculator(submissionsClient)
-
-        assertThat(rankingCalculator.ranking(USERS, submissionsClient.findAll(), problemsClient.findAll())).isEqualTo(listOf(
+        assertThat(rankingCalculator.ranking(USERS, emptyList(), emptyList())).isEqualTo(listOf(
                 RankEntry("mikołaj", 0.0, emptyList(), "Kraków", "Tyniec Team"),
                 RankEntry("julia", 0.0, emptyList(), "Kraków", "Tyniec Team"),
                 RankEntry("joe", 0.0, emptyList(), "London", "London Team"),
@@ -55,24 +43,24 @@ class BasicRankingCalculatorSpec {
 
     @Test
     fun returns_users_in_descending_order_based_on_their_score_and_if_user_equal_following_creation_of_user_order() {
-        given(problemsClient.findAll()).willReturn(listOf(
+        val problems = listOf(
                 Problem("fib", 1, 1),
                 Problem("2-sum", 2, 1),
                 Problem("word-ladder", 3, 1)
-        ))
+        )
 
-        given(submissionsClient.findAll()).willReturn(listOf(
+        val submissions = listOf(
                 submission("fib", 0.01, USER_MIKOLAJ.id),
                 submission("fib", 0.011, USER_JULIA.id),
                 submission("2-sum", 0.01, USER_JOE.id),
                 submission("2-sum", 0.011, USER_TOM.id),
                 submission("word-ladder", 0.01, USER_MIKOLAJ.id),
                 submission("word-ladder", 0.011, USER_JULIA.id)
-        ))
+        )
 
-        val rankingCalculator = basicRankingCalculator(submissionsClient)
+        val rankingCalculator = basicRankingCalculator()
 
-        assertThat(rankingCalculator.ranking(USERS, submissionsClient.findAll(), problemsClient.findAll())).isEqualTo(listOf(
+        assertThat(rankingCalculator.ranking(USERS, submissions, problems)).isEqualTo(listOf(
                 RankEntry("mikołaj", 60.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team"),
                 RankEntry("julia", 60.0, listOf("fib", "word-ladder"), "Kraków", "Tyniec Team"),
                 RankEntry("joe", 30.0, listOf("2-sum"), "London", "London Team"),
@@ -82,19 +70,17 @@ class BasicRankingCalculatorSpec {
 
     @Test
     fun returns_empty_problem_ranking_when_no_submissions_for_problem() {
-        given(submissionsClient.findByProblemId("fib")).willReturn(emptyList())
+        val rankingCalculator = basicRankingCalculator()
 
-        val rankingCalculator = basicRankingCalculator(submissionsClient)
-
-        assertThat(rankingCalculator.problemRanking("fib", USERS, problemsClient.findAll()))
+        assertThat(rankingCalculator.problemRanking(USERS, emptyList(), emptyList(), "fib"))
                 .isEqualTo(emptyList<ProblemRankEntry>())
     }
 
     @Test
     fun returns_problem_ranking_sorted_by_times() {
-        given(problemsClient.findAll()).willReturn(listOf(
+        val problems = listOf(
                 Problem("fib", 1, 1)
-        ))
+        )
 
         val submissions = listOf(
                 submission("fib", 0.01, USER_MIKOLAJ.id),
@@ -102,12 +88,10 @@ class BasicRankingCalculatorSpec {
                 submission("fib", 0.001, USER_JOE.id),
                 submission("fib", 0.1, USER_TOM.id)
         )
-        given(submissionsClient.findByProblemId("fib")).willReturn(submissions)
-        given(submissionsClient.findAll()).willReturn(submissions)
 
-        val rankingCalculator = basicRankingCalculator(submissionsClient)
+        val rankingCalculator = basicRankingCalculator()
 
-        assertThat(rankingCalculator.problemRanking("fib", USERS, problemsClient.findAll())).isEqualTo(listOf(
+        assertThat(rankingCalculator.problemRanking(USERS, submissions, problems, "fib")).isEqualTo(listOf(
                 ProblemRankEntry("julia", 10.0, 0.0001),
                 ProblemRankEntry("joe", 10.0, 0.001),
                 ProblemRankEntry("mikołaj", 10.0, 0.01),
@@ -117,9 +101,9 @@ class BasicRankingCalculatorSpec {
 
     @Test
     fun returns_problem_ranking_sorted_by_times_considering_duplicates() {
-        given(problemsClient.findAll()).willReturn(listOf(
+        val problems = listOf(
                 Problem("fib", 1, 1)
-        ))
+        )
 
         val submissions = listOf(
                 submission("fib", 0.01, USER_MIKOLAJ.id),
@@ -130,12 +114,9 @@ class BasicRankingCalculatorSpec {
                 submission("fib", 0.1, USER_TOM.id)
         )
 
-        given(submissionsClient.findAll()).willReturn(submissions)
-        given(submissionsClient.findByProblemId("fib")).willReturn(submissions)
+        val rankingCalculator = basicRankingCalculator()
 
-        val rankingCalculator = basicRankingCalculator(submissionsClient)
-
-        assertThat(rankingCalculator.problemRanking("fib", USERS, problemsClient.findAll())).isEqualTo(listOf(
+        assertThat(rankingCalculator.problemRanking(USERS, submissions, problems, "fib")).isEqualTo(listOf(
                 ProblemRankEntry("julia", 9.0, 0.0001),
                 ProblemRankEntry("joe", 10.0, 0.001),
                 ProblemRankEntry("mikołaj", 9.0, 0.01),
@@ -143,8 +124,8 @@ class BasicRankingCalculatorSpec {
         ))
     }
 
-    private fun basicRankingCalculator(repository: SubmissionsClient) =
-            BasicRankingCalculator(repository, BasicScoreCalculator())
+    private fun basicRankingCalculator() =
+            BasicRankingCalculator(BasicScoreCalculator())
 
     private fun submission(problemId: String, elapsedTime: Double, userId: String) =
             Submission(
