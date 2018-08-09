@@ -39,8 +39,9 @@ class BasicRankingCalculator(
     ): List<ProblemRankEntry> {
 
         val stats = SubmissionsFilter.stats(problemSubmissions)
+        val submissions = SubmissionsFilter.acceptedWithBestTimes(problemSubmissions)
 
-        return problemSubmissions.map { submission ->
+        return submissions.map { submission ->
             val user = users.first { it.id == submission.userId }
 
             val userSubmissionsCount = stats.count[user.id]!!

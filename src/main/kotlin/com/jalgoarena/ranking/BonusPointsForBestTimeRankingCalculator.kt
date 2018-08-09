@@ -1,6 +1,7 @@
 package com.jalgoarena.ranking
 
 import com.jalgoarena.domain.*
+import com.jalgoarena.submissions.SubmissionsFilter
 
 class BonusPointsForBestTimeRankingCalculator(
         private val rankingCalculator: RankingCalculator
@@ -10,7 +11,8 @@ class BonusPointsForBestTimeRankingCalculator(
             users: List<User>, allSubmissions: List<Submission>, problems: List<Problem>
     ): List<RankEntry> {
 
-        val bonusPoints = calculateBonusPointsForFastestSolutions(allSubmissions, users)
+        val submissions = SubmissionsFilter.acceptedWithBestTimes(allSubmissions)
+        val bonusPoints = calculateBonusPointsForFastestSolutions(submissions, users)
 
         return rankingCalculator.ranking(users, allSubmissions, problems).map { rankEntry ->
             val id = users.firstOrNull { it.username == rankEntry.hacker }?.id ?: ""
@@ -29,7 +31,8 @@ class BonusPointsForBestTimeRankingCalculator(
             users: List<User>, problemSubmissions: List<Submission>, problems: List<Problem>, problemId: String
     ): List<ProblemRankEntry> {
 
-        val bonusPoints = calculateBonusPointsForFastestSolutions(problemSubmissions, users)
+        val submissions = SubmissionsFilter.acceptedWithBestTimes(problemSubmissions)
+        val bonusPoints = calculateBonusPointsForFastestSolutions(submissions, users)
 
         return rankingCalculator
                 .problemRanking(users, problemSubmissions, problems, problemId).map { problemRankEntry ->
