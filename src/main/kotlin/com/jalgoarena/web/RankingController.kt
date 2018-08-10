@@ -1,9 +1,9 @@
 package com.jalgoarena.web
 
-import com.jalgoarena.domain.*
+import com.jalgoarena.domain.SolvedRatioEntry
+import com.jalgoarena.domain.Submission
 import com.jalgoarena.ranking.RankingCalculator
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
@@ -18,7 +18,6 @@ open class RankingController(
         @Autowired private val submissionsClient: SubmissionsClient
 ) {
 
-    @Cacheable("ranking")
     @GetMapping("/ranking", produces = ["application/json"])
     open fun ranking() =
             rankingCalculator.ranking(
@@ -27,7 +26,6 @@ open class RankingController(
                     problems = problemsClient.findAll()
             )
 
-    @Cacheable("rankingTillDate", key = "#date")
     @GetMapping("/ranking/{date}", produces = ["application/json"])
     open fun rankingTillDate(@PathVariable date: String) =
             rankingCalculator.ranking(
@@ -36,7 +34,6 @@ open class RankingController(
                     problems = problemsClient.findAll()
             )
 
-    @Cacheable("startDate")
     @GetMapping("/ranking/startDate", produces = ["application/json"])
     open fun rankingStartDate(): String {
         val submission = submissionsClient.findAll().minBy { it.submissionTime }
@@ -48,7 +45,6 @@ open class RankingController(
         }
     }
 
-    @Cacheable("problemRanking", key = "#problemId")
     @GetMapping("/ranking/problem/{problemId}", produces = ["application/json"])
     open fun problemRanking(@PathVariable problemId: String) =
             rankingCalculator.problemRanking(
@@ -58,7 +54,6 @@ open class RankingController(
                     problemId = problemId
             )
 
-    @Cacheable("solvedRatio")
     @GetMapping("/solved-ratio", produces = ["application/json"])
     open fun submissionsSolvedRatio() =
             calculateSubmissionsSolvedRatioAndReturnIt(submissionsClient.findAll().filter { it.statusCode == "ACCEPTED" })

@@ -15,7 +15,6 @@ import org.springframework.util.concurrent.ListenableFutureCallback
 
 @Service
 class SubmissionResultsConsumer(
-        @Autowired private val cacheManager: CacheManager,
         @Autowired private val objectMapper: ObjectMapper
 ) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
@@ -34,7 +33,6 @@ class SubmissionResultsConsumer(
             }
 
             logger.info("Received request for refreshing rankings: $event")
-            clearCache()
 
             val rankingEventFuture = rankingEventPublisher.send(
                 "events", objectMapper.writeValueAsString(GenericEvent(REFRESH_RANKING_EVENT))
@@ -43,13 +41,6 @@ class SubmissionResultsConsumer(
         } catch (ex: Exception) {
             logger.error("Cannot refresh ranking: {}", message, ex)
             throw ex
-        }
-    }
-
-    @Scheduled(fixedRate = 30000, initialDelay = 30000)
-    fun clearCache() {
-        cacheManager.cacheNames.parallelStream().forEach {
-            cacheManager.getCache(it)!!.clear()
         }
     }
 
