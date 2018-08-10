@@ -2,6 +2,7 @@ package com.jalgoarena.web
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jalgoarena.domain.GenericEvent
+import com.jalgoarena.domain.GenericEvent.Companion.REFRESH_RANKING_EVENT
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.CacheManager
@@ -36,15 +37,9 @@ class SubmissionResultsConsumer(
             clearCache()
 
             val rankingEventFuture = rankingEventPublisher.send(
-                "events", objectMapper.writeValueAsString(
-                    GenericEvent(
-                            type = GenericEvent.REFRESH_RANKING_EVENT,
-                            problemId = event.problemId,
-                            submissionId = event.submissionId
-                    )
-                )
+                "events", objectMapper.writeValueAsString(GenericEvent(REFRESH_RANKING_EVENT))
             )
-            rankingEventFuture.addCallback(RankingEventPublishHandler(event.submissionId))
+            rankingEventFuture.addCallback(RankingEventPublishHandler())
         } catch (ex: Exception) {
             logger.error("Cannot refresh ranking: {}", message, ex)
             throw ex
@@ -62,19 +57,16 @@ class SubmissionResultsConsumer(
         return objectMapper.readValue<GenericEvent>(message, GenericEvent::class.java)
     }
 
-    class RankingEventPublishHandler(
-            private val submissionId: String
-    ) : ListenableFutureCallback<SendResult<Int, String>> {
+    class RankingEventPublishHandler : ListenableFutureCallback<SendResult<Int, String>> {
 
         private val logger = LoggerFactory.getLogger(this.javaClass)
 
         override fun onSuccess(result: SendResult<Int, String>?) {
-            logger.info("Requested ranking refresh after new submission [submissionId={}]", submissionId)
+            logger.info("Requested ranking refresh")
         }
 
         override fun onFailure(ex: Throwable?) {
-            logger.error("Error during ranking refresh for submission [submissionId={}]", submissionId, ex)
+            logger.error("Error during ranking refresh", ex)
         }
-
     }
 }

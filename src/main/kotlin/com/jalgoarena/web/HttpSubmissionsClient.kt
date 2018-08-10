@@ -62,7 +62,7 @@ class CachedSubmissionsClient(
     private val submissions = CopyOnWriteArrayList<Submission>()
 
     init {
-        refreshAndGetSubmissions()
+        submissions.addAllAbsent(submissionsClient.findAll())
     }
 
     override fun findAll(): List<Submission> {
@@ -79,7 +79,7 @@ class CachedSubmissionsClient(
 
     override fun findBySubmissionTimeLessThan(tillDate: String) =
             takePlusOneDayAtMidnight(tillDate).let { date ->
-                submissions.filter {
+                refreshAndGetSubmissions().filter {
                     it.submissionTime < date
                 }
             }
@@ -91,8 +91,6 @@ class CachedSubmissionsClient(
             submissionsClient.findAllAfter(submissionsLastId()).let {
                 submissions.addAllAbsent(it)
                 submissions
-            }.run {
-                toTypedArray().toList()
             }
 
     private fun submissionsLastId() =
