@@ -32,5 +32,7 @@ open class AppConfiguration {
 
     @Bean
     open fun submissionsClient(): SubmissionsClient =
-            HttpSubmissionsClient(RestTemplate(), jalgoarenaApiUrl)
+            CachedSubmissionsClient(
+                    HttpSubmissionsClient(RestTemplate(), jalgoarenaApiUrl)
+            )
 }
