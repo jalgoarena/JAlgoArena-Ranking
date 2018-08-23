@@ -1,10 +1,8 @@
 package com.jalgoarena
 
-import com.jalgoarena.web.ProblemsClient
 import com.jalgoarena.ranking.BasicRankingCalculator
 import com.jalgoarena.ranking.BasicScoreCalculator
 import com.jalgoarena.ranking.BonusPointsForBestTimeRankingCalculator
-import com.jalgoarena.ranking.RankingCalculator
 import com.jalgoarena.web.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -19,17 +17,10 @@ open class AppConfiguration {
     private lateinit var jalgoarenaApiUrl: String
 
     @Bean
-    open fun rankingCalculator(
-            submissionsClient : SubmissionsClient,
-            problemsClient: ProblemsClient
-    ): RankingCalculator {
-        val scoreCalculator = BasicScoreCalculator()
-        val rankingCalculator = BasicRankingCalculator(submissionsClient, scoreCalculator)
-
-        return BonusPointsForBestTimeRankingCalculator(
-                submissionsClient, rankingCalculator
-        )
-    }
+    open fun rankingCalculator(submissionsClient: SubmissionsClient, problemsClient: ProblemsClient) =
+            BonusPointsForBestTimeRankingCalculator(
+                    BasicRankingCalculator(BasicScoreCalculator())
+            )
 
     @Bean
     open fun usersClient(): UsersClient =
@@ -41,5 +32,7 @@ open class AppConfiguration {
 
     @Bean
     open fun submissionsClient(): SubmissionsClient =
-            HttpSubmissionsClient(RestTemplate(), jalgoarenaApiUrl)
+            CachedSubmissionsClient(
+                    HttpSubmissionsClient(RestTemplate(), jalgoarenaApiUrl)
+            )
 }

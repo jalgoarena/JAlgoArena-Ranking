@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class GenericEvent(
-        val type: String,
-        val problemId: String,
-        val submissionId: String
+        val type: String
 ) {
     companion object {
         const val REFRESH_SUBMISSIONS_EVENT = "refreshUserSubmissions"

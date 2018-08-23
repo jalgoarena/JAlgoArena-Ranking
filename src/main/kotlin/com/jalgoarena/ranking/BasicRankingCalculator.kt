@@ -1,19 +1,18 @@
 package com.jalgoarena.ranking
 
 import com.jalgoarena.domain.*
-import com.jalgoarena.ranking.RankingCalculator.Companion.acceptedWithBestTimes
-import com.jalgoarena.web.SubmissionsClient
+import com.jalgoarena.submissions.SubmissionsFilter
 
 class BasicRankingCalculator(
-        private val submissionsClient : SubmissionsClient,
         private val scoreCalculator: ScoreCalculator
 ) : RankingCalculator {
 
     override fun ranking(
-            users: List<User>, submissions: List<Submission>, problems: List<Problem>
+            users: List<User>, allSubmissions: List<Submission>, problems: List<Problem>
     ): List<RankEntry> {
 
-        val stats = stats(submissionsClient.findAll())
+        val stats = SubmissionsFilter.stats(allSubmissions)
+        val submissions = SubmissionsFilter.acceptedWithBestTimes(allSubmissions)
 
         return users.map { user ->
 
@@ -35,12 +34,14 @@ class BasicRankingCalculator(
         }.sortedWith(compareByDescending(RankEntry::score).thenByDescending { it.solvedProblems.size })
     }
 
-    override fun problemRanking(problemId: String, users: List<User>, problems: List<Problem>): List<ProblemRankEntry> {
+    override fun problemRanking(
+            users: List<User>, problemSubmissions: List<Submission>, problems: List<Problem>, problemId: String
+    ): List<ProblemRankEntry> {
 
-        val stats = stats(submissionsClient.findAll())
-        val problemSubmissions = acceptedWithBestTimes(submissionsClient.findByProblemId(problemId))
+        val stats = SubmissionsFilter.stats(problemSubmissions)
+        val submissions = SubmissionsFilter.acceptedWithBestTimes(problemSubmissions)
 
-        return problemSubmissions.map { submission ->
+        return submissions.map { submission ->
             val user = users.first { it.id == submission.userId }
 
             val userSubmissionsCount = stats.count[user.id]!!
@@ -62,24 +63,4 @@ class BasicRankingCalculator(
             )
         }
     }
-
-    private fun stats(submissions: List<Submission>): SubmissionStats {
-        val count = mutableMapOf<String, MutableMap<String, Int>>()
-
-        submissions.forEach { submission ->
-            if (!count.contains(submission.userId)) {
-                count[submission.userId] = mutableMapOf()
-            }
-
-            if (count[submission.userId]!!.contains(submission.problemId)) {
-                count[submission.userId]!![submission.problemId] =
-                        count[submission.userId]!![submission.problemId]!! + 1
-            } else {
-                count[submission.userId]!![submission.problemId] = 1
-            }
-        }
-
-        return SubmissionStats(count)
-    }
 }
-
