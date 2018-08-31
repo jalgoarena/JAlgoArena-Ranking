@@ -2,7 +2,6 @@ package com.jalgoarena
 
 import com.jalgoarena.ranking.BasicRankingCalculator
 import com.jalgoarena.ranking.BasicScoreCalculator
-import com.jalgoarena.ranking.BonusPointsForBestTimeRankingCalculator
 import com.jalgoarena.web.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -17,10 +16,8 @@ open class AppConfiguration {
     private lateinit var jalgoarenaApiUrl: String
 
     @Bean
-    open fun rankingCalculator(submissionsClient: SubmissionsClient, problemsClient: ProblemsClient) =
-            BonusPointsForBestTimeRankingCalculator(
-                    BasicRankingCalculator(BasicScoreCalculator())
-            )
+    open fun rankingCalculator() =
+            BasicRankingCalculator(BasicScoreCalculator())
 
     @Bean
     open fun usersClient(): UsersClient =
