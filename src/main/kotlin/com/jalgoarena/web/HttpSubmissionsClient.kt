@@ -65,6 +65,8 @@ class CachedSubmissionsClient(
         private val submissionsClient: SubmissionsClient
 ) : SubmissionsClient {
 
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+
     private var submissionsCache: AtomicReference<Optional<List<Submission>>> =
             AtomicReference(Optional.empty())
 
@@ -73,9 +75,11 @@ class CachedSubmissionsClient(
         val optionalSubmissions = submissionsCache.get()
 
         if (optionalSubmissions.isPresent && optionalSubmissions.get().size == currentSubmissionsCount) {
+            logger.info("Sizes equals, using submissions from cache")
             return optionalSubmissions.get()
         }
 
+        logger.info("Querying new set of submissions")
         val submissions = submissionsClient.findAll()
         this.submissionsCache.set(Optional.of(submissions))
 

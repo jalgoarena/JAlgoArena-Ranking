@@ -2,17 +2,28 @@ package com.jalgoarena.ranking
 
 import com.jalgoarena.domain.*
 import com.jalgoarena.submissions.SubmissionsFilter
+import org.slf4j.LoggerFactory
 
 class BasicRankingCalculator(
         private val scoreCalculator: ScoreCalculator
 ) : RankingCalculator {
 
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+
     override fun ranking(
             users: List<User>, allSubmissions: List<Submission>, problems: List<Problem>
     ): List<RankEntry> {
 
+        logger.info(
+                "Calculating ranking for {} users, {} submissions, {} problems",
+                users.size, allSubmissions.size, problems.size
+        )
+
         val stats = SubmissionsFilter.stats(allSubmissions)
+        logger.info("Stats: {}", stats)
+
         val submissions = SubmissionsFilter.acceptedWithBestTimes(allSubmissions)
+        logger.info("Number of submissions accepted with with best times: {}", submissions.size)
 
         return users.map { user ->
 
