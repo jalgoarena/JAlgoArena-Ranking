@@ -3,9 +3,6 @@ package com.jalgoarena.web
 import com.jalgoarena.domain.Submission
 import org.slf4j.LoggerFactory
 import org.springframework.web.client.RestOperations
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.ConcurrentHashMap
 
 interface SubmissionsClient {
     fun findAll(): List<Submission>
@@ -52,55 +49,5 @@ class HttpSubmissionsClient(
 
     companion object {
         private val LOG = LoggerFactory.getLogger(HttpSubmissionsClient::class.java)
-    }
-}
-
-class CachedSubmissionsClient(
-        private val submissionsClient: SubmissionsClient
-) : SubmissionsClient {
-
-    private val submissions = ConcurrentHashMap<Int, Submission>()
-
-    init {
-        submissions.putAll(submissionsClient.findAll().map {
-            it.id to it
-        })
-    }
-
-    override fun findAll(): List<Submission> {
-        return refreshAndGetSubmissions()
-    }
-
-    override fun findAllAfter(id: Int) =
-            submissionsClient.findAllAfter(id)
-
-    override fun findByProblemId(problemId: String) =
-            refreshAndGetSubmissions().let { submissions ->
-                submissions.filter { it.problemId == problemId }
-            }
-
-    override fun findBySubmissionTimeLessThan(tillDate: String) =
-            takePlusOneDayAtMidnight(tillDate).let { date ->
-                refreshAndGetSubmissions().filter {
-                    it.submissionTime < date
-                }
-            }
-
-    private fun takePlusOneDayAtMidnight(tillDate: String) =
-            LocalDate.parse(tillDate, YYYY_MM_DD).plusDays(1).atStartOfDay()
-
-    private fun refreshAndGetSubmissions() =
-            submissionsClient.findAllAfter(submissionsLastId()).forEach {
-                submissions.putIfAbsent(it.id, it)
-            }.let {
-                submissions.values.toList()
-            }
-
-
-    private fun submissionsLastId() =
-            submissions.keys.maxBy { it } ?: -1
-
-    companion object {
-        private val YYYY_MM_DD = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     }
 }
